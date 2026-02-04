@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DESCRIZIONE ARTICOLO">
+    <meta name="keywords" content="cybersecurity, KEYWORDS">
+    <meta name="author" content="CybersecurityZen">
+    
+    <title>TITOLO ARTICOLO | CybersecurityZen</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Prism.js for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        /* Article Page Specific Styles */
+        .article-hero {
+            padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
+        }
+        
+        .article-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .article-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+        
+        .article-breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .article-breadcrumb a:hover {
+            color: var(--primary);
+        }
+        
+        .article-breadcrumb span {
+            color: var(--text-muted);
+        }
+        
+        .article-category-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-glow);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .article-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .article-meta-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .article-meta-info i {
+            color: var(--primary);
+            margin-right: var(--spacing-xs);
+        }
+        
+        /* Article Content */
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        .article-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        
+        .article-content h2 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        
+        .article-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .article-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-fast);
+        }
+        
+        .article-content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-lg);
+        }
+        
+        .article-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .article-content code {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+        }
+        
+        .article-content pre {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            overflow-x: auto;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+        
+        .article-content blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .info-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .info-box.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .info-box-title {
+            font-family: var(--font-display);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .info-box-title i {
+            color: var(--primary);
+        }
+        
+        .info-box.warning .info-box-title i {
+            color: #f59e0b;
+        }
+        
+        .info-box.danger .info-box-title i {
+            color: #ef4444;
+        }
+        
+        /* Tags */
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .article-tag {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .article-tag:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        /* Share Buttons */
+        .article-share {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .article-share span {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .share-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Related Articles */
+        .related-articles {
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-articles h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .related-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .related-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .related-card h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .related-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="../tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Article Hero -->
+    <header class="article-hero">
+        <div class="article-hero-content">
+            <nav class="article-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <a href="../blog.html">Blog</a>
+                <span>/</span>
+                <span>Articolo</span>
+            </nav>
+            
+            <span class="article-category-tag">CATEGORIA</span>
+            
+            <h1>TITOLO DELL'ARTICOLO QUI</h1>
+            
+            <div class="article-meta-info">
+                <span><i class="fas fa-calendar"></i> DATA</span>
+                <span><i class="fas fa-clock"></i> X min lettura</span>
+                <span><i class="fas fa-user"></i> CybersecurityZen</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <article class="article-container">
+        <div class="article-content">
+            <!-- CONTENUTO DELL'ARTICOLO INIZIA QUI -->
+            
+            <p>Paragrafo introduttivo dell'articolo. Descrivi brevemente l'argomento che tratterai e perché è importante.</p>
+            
+            <h2>Prima Sezione</h2>
+            
+            <p>Contenuto della prima sezione. Puoi usare <strong>testo in grassetto</strong>, <em>corsivo</em>, e <code>codice inline</code>.</p>
+            
+            <div class="info-box">
+                <div class="info-box-title"><i class="fas fa-info-circle"></i> Nota</div>
+                <p>Questo è un box informativo per evidenziare informazioni importanti.</p>
+            </div>
+            
+            <h3>Sottosezione</h3>
+            
+            <p>Contenuto della sottosezione.</p>
+            
+            <ul>
+                <li>Primo punto elenco</li>
+                <li>Secondo punto elenco</li>
+                <li>Terzo punto elenco</li>
+            </ul>
+            
+            <h2>Codice di Esempio</h2>
+            
+            <p>Ecco un esempio di codice:</p>
+            
+            <pre><code class="language-python">def esempio_funzione():
+    """Docstring della funzione"""
+    print("Hello, CybersecurityZen!")
+    return True</code></pre>
+            
+            <div class="info-box warning">
+                <div class="info-box-title"><i class="fas fa-exclamation-triangle"></i> Attenzione</div>
+                <p>Questo è un box di avvertimento per segnalare potenziali problemi.</p>
+            </div>
+            
+            <h2>Conclusioni</h2>
+            
+            <p>Riepilogo finale dell'articolo e conclusioni principali.</p>
+            
+            <blockquote>
+                "Una citazione rilevante sull'argomento trattato."
+            </blockquote>
+            
+            <!-- CONTENUTO DELL'ARTICOLO FINISCE QUI -->
+            
+            <!-- Tags -->
+            <div class="article-tags">
+                <a href="#" class="article-tag">#cybersecurity</a>
+                <a href="#" class="article-tag">#tutorial</a>
+                <a href="#" class="article-tag">#tag3</a>
+            </div>
+            
+            <!-- Share -->
+            <div class="article-share">
+                <span>Condividi:</span>
+                <a href="#" class="share-btn" title="Condividi su Twitter" onclick="shareOnTwitter()">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="share-btn" title="Condividi su LinkedIn" onclick="shareOnLinkedIn()">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="share-btn" title="Copia link" onclick="copyLink()">
+                    <i class="fas fa-link"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Related Articles (opzionale) -->
+        <!--
+        <div class="related-articles">
+            <h3>Articoli Correlati</h3>
+            <div class="related-grid">
+                <a href="altro-articolo.html" class="related-card">
+                    <h4>Titolo Articolo Correlato</h4>
+                    <p>Breve descrizione dell'articolo correlato...</p>
+                </a>
+            </div>
+        </div>
+        -->
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="../index.html">Home</a>
+                        <a href="../blog.html">Blog</a>
+                        <a href="../tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+                <p class="footer-powered">Powered by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Share functions
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.title);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+        }
+        
+        function shareOnLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+        
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => showToast('Link copiato negli appunti!'))
+                .catch(() => showToast('Errore durante la copia', 'error'));
+        }
+    </script>
+</body>
+</html>

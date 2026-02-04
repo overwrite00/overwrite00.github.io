@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CybersecurityZen - Blog, progetti e strumenti per la cybersecurity">
+    <meta name="keywords" content="cybersecurity, hacking, security, tools, blog, tutorial">
+    <meta name="author" content="CybersecurityZen">
+    
+    <title>CybersecurityZen | Cybersecurity Hub</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+        <div class="scan-line"></div>
+        <div class="glitch-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="blog.html" class="nav-link"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">root@cybersecurityzen:~</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span>
+                        <span class="command typing" id="hero-typing"></span>
+                        <span class="cursor">▋</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h1 class="hero-title">
+                <span class="glitch" data-text="CybersecurityZen">CybersecurityZen</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                <span class="typed-text">Security Research</span>
+                <span class="typed-separator">•</span>
+                <span class="typed-text">Tools</span>
+                <span class="typed-separator">•</span>
+                <span class="typed-text">Projects</span>
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <span class="stat-label">Security First</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-code"></i>
+                    <span class="stat-label">Open Source</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-book"></i>
+                    <span class="stat-label">Knowledge Sharing</span>
+                </div>
+            </div>
+            
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">
+                    <i class="fas fa-folder-open"></i> Esplora Progetti
+                </a>
+                <a href="tools.html" class="btn btn-secondary">
+                    <i class="fas fa-tools"></i> Vai ai Tools
+                </a>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Latest Articles Section -->
+    <section class="section articles-section" id="articles">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-rss"></i> Latest</span>
+                <h2 class="section-title">Ultimi Articoli</h2>
+                <p class="section-subtitle">Guide, tutorial e approfondimenti sulla cybersecurity</p>
+            </div>
+            
+            <div class="articles-grid" id="articles-container">
+                <!-- Gli articoli verranno caricati dinamicamente da JavaScript -->
+                <!-- Placeholder quando non ci sono articoli -->
+            </div>
+            
+            <div class="articles-empty" id="articles-empty">
+                <div class="empty-icon">
+                    <i class="fas fa-pencil-alt"></i>
+                </div>
+                <h3>Articoli in arrivo</h3>
+                <p>Nuovi contenuti saranno pubblicati presto. Stay tuned!</p>
+                <div class="empty-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="section-footer" id="articles-footer" style="display: none;">
+                <a href="blog.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-right"></i> Vedi tutti gli articoli
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section projects-section" id="projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fab fa-github"></i> GitHub</span>
+                <h2 class="section-title">I Miei Progetti</h2>
+                <p class="section-subtitle">Repository pubblici e contributi open source</p>
+            </div>
+            
+            <div class="projects-grid" id="projects-container">
+                <!-- I progetti verranno caricati dinamicamente da GitHub API -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+            
+            <div class="section-footer">
+                <a href="https://github.com/overwrite00?tab=repositories" target="_blank" class="btn btn-outline">
+                    <i class="fab fa-github"></i> Vedi tutti su GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Preview Section -->
+    <section class="section tools-section" id="tools">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-wrench"></i> Toolkit</span>
+                <h2 class="section-title">Strumenti Cybersecurity</h2>
+                <p class="section-subtitle">Tools essenziali per analisi, encoding e sicurezza</p>
+            </div>
+            
+            <div class="tools-categories">
+                <!-- Encoding Tools -->
+                <div class="tool-category">
+                    <div class="category-header">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>Encoding / Decoding</h3>
+                    </div>
+                    <div class="category-tools">
+                        <a href="tools.html#base64" class="tool-card-mini">
+                            <span class="tool-icon">B64</span>
+                            <span class="tool-name">Base64</span>
+                        </a>
+                        <a href="tools.html#url" class="tool-card-mini">
+                            <span class="tool-icon">URL</span>
+                            <span class="tool-name">URL Encode</span>
+                        </a>
+                        <a href="tools.html#html" class="tool-card-mini">
+                            <span class="tool-icon">&lt;/&gt;</span>
+                            <span class="tool-name">HTML Entities</span>
+                        </a>
+                        <a href="tools.html#hex" class="tool-card-mini">
+                            <span class="tool-icon">0x</span>
+                            <span class="tool-name">Hex Converter</span>
+                        </a>
+                        <a href="tools.html#jwt" class="tool-card-mini">
+                            <span class="tool-icon">JWT</span>
+                            <span class="tool-name">JWT Decoder</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Hash & Crypto Tools -->
+                <div class="tool-category">
+                    <div class="category-header">
+                        <i class="fas fa-fingerprint"></i>
+                        <h3>Hash & Crypto</h3>
+                    </div>
+                    <div class="category-tools">
+                        <a href="tools.html#hash" class="tool-card-mini">
+                            <span class="tool-icon">#</span>
+                            <span class="tool-name">Hash Generator</span>
+                        </a>
+                        <a href="tools.html#password" class="tool-card-mini">
+                            <span class="tool-icon"><i class="fas fa-key"></i></span>
+                            <span class="tool-name">Password Gen</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Network Tools -->
+                <div class="tool-category">
+                    <div class="category-header">
+                        <i class="fas fa-network-wired"></i>
+                        <h3>Network & DNS</h3>
+                    </div>
+                    <div class="category-tools">
+                        <a href="tools.html#ip" class="tool-card-mini">
+                            <span class="tool-icon">IP</span>
+                            <span class="tool-name">IP Lookup</span>
+                        </a>
+                        <a href="tools.html#dns" class="tool-card-mini">
+                            <span class="tool-icon">DNS</span>
+                            <span class="tool-name">DNS Lookup</span>
+                        </a>
+                        <a href="tools.html#subnet" class="tool-card-mini">
+                            <span class="tool-icon">/24</span>
+                            <span class="tool-name">Subnet Calc</span>
+                        </a>
+                        <a href="tools.html#headers" class="tool-card-mini">
+                            <span class="tool-icon">H</span>
+                            <span class="tool-name">HTTP Headers</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Utility Tools -->
+                <div class="tool-category">
+                    <div class="category-header">
+                        <i class="fas fa-toolbox"></i>
+                        <h3>Utilities</h3>
+                    </div>
+                    <div class="category-tools">
+                        <a href="tools.html#timestamp" class="tool-card-mini">
+                            <span class="tool-icon"><i class="fas fa-clock"></i></span>
+                            <span class="tool-name">Timestamp</span>
+                        </a>
+                        <a href="tools.html#regex" class="tool-card-mini">
+                            <span class="tool-icon">.*</span>
+                            <span class="tool-name">Regex Tester</span>
+                        </a>
+                        <a href="tools.html#urlparser" class="tool-card-mini">
+                            <span class="tool-icon"><i class="fas fa-link"></i></span>
+                            <span class="tool-name">URL Parser</span>
+                        </a>
+                        <a href="tools.html#string" class="tool-card-mini">
+                            <span class="tool-icon">Aa</span>
+                            <span class="tool-name">String Utils</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-footer">
+                <a href="tools.html" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> Apri tutti i Tools
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Tools (Inline) -->
+    <section class="section quick-tools-section" id="quick-tools">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-bolt"></i> Quick Access</span>
+                <h2 class="section-title">Tool Rapidi</h2>
+                <p class="section-subtitle">Accesso diretto ai tool più utilizzati</p>
+            </div>
+            
+            <div class="quick-tools-grid">
+                <!-- Base64 Quick Tool -->
+                <div class="quick-tool-card">
+                    <div class="quick-tool-header">
+                        <span class="quick-tool-icon">B64</span>
+                        <h3>Base64</h3>
+                    </div>
+                    <div class="quick-tool-body">
+                        <textarea id="quick-base64-input" placeholder="Inserisci testo o Base64..."></textarea>
+                        <div class="quick-tool-actions">
+                            <button onclick="quickBase64Encode()" class="btn-small">Encode</button>
+                            <button onclick="quickBase64Decode()" class="btn-small">Decode</button>
+                            <button onclick="quickCopy('quick-base64-output')" class="btn-small btn-icon" title="Copia"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <div id="quick-base64-output" class="quick-tool-output"></div>
+                    </div>
+                </div>
+                
+                <!-- Hash Quick Tool -->
+                <div class="quick-tool-card">
+                    <div class="quick-tool-header">
+                        <span class="quick-tool-icon">#</span>
+                        <h3>Hash Generator</h3>
+                    </div>
+                    <div class="quick-tool-body">
+                        <textarea id="quick-hash-input" placeholder="Inserisci testo da hashare..."></textarea>
+                        <div class="quick-tool-actions">
+                            <select id="quick-hash-type">
+                                <option value="MD5">MD5</option>
+                                <option value="SHA-1">SHA-1</option>
+                                <option value="SHA-256" selected>SHA-256</option>
+                                <option value="SHA-512">SHA-512</option>
+                            </select>
+                            <button onclick="quickHash()" class="btn-small">Generate</button>
+                            <button onclick="quickCopy('quick-hash-output')" class="btn-small btn-icon" title="Copia"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <div id="quick-hash-output" class="quick-tool-output mono"></div>
+                    </div>
+                </div>
+                
+                <!-- Password Generator Quick Tool -->
+                <div class="quick-tool-card">
+                    <div class="quick-tool-header">
+                        <span class="quick-tool-icon"><i class="fas fa-key"></i></span>
+                        <h3>Password Generator</h3>
+                    </div>
+                    <div class="quick-tool-body">
+                        <div class="password-options">
+                            <div class="option-row">
+                                <label>Lunghezza: <span id="pwd-length-val">16</span></label>
+                                <input type="range" id="quick-pwd-length" min="8" max="64" value="16" oninput="document.getElementById('pwd-length-val').textContent=this.value">
+                            </div>
+                            <div class="option-row checkboxes">
+                                <label><input type="checkbox" id="pwd-upper" checked> A-Z</label>
+                                <label><input type="checkbox" id="pwd-lower" checked> a-z</label>
+                                <label><input type="checkbox" id="pwd-numbers" checked> 0-9</label>
+                                <label><input type="checkbox" id="pwd-symbols" checked> !@#</label>
+                            </div>
+                        </div>
+                        <div class="quick-tool-actions">
+                            <button onclick="quickGeneratePassword()" class="btn-small">Generate</button>
+                            <button onclick="quickCopy('quick-pwd-output')" class="btn-small btn-icon" title="Copia"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <div id="quick-pwd-output" class="quick-tool-output mono"></div>
+                        <div id="pwd-strength" class="password-strength"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="index.html">Home</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+                <p class="footer-powered">Powered by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/github-api.js"></script>
+    <script src="js/tools.js"></script>
+</body>
+</html>

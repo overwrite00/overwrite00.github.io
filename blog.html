@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CybersecurityZen Blog - Articoli, guide e tutorial sulla cybersecurity">
+    <meta name="keywords" content="cybersecurity, blog, tutorial, guide, hacking, security">
+    <meta name="author" content="CybersecurityZen">
+    
+    <title>Blog | CybersecurityZen</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Blog Page Specific Styles */
+        .blog-hero {
+            padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
+        }
+        
+        .blog-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .blog-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Filters */
+        .blog-filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .filter-btn {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.1);
+        }
+        
+        /* Blog Grid */
+        .blog-section {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            max-width: 500px;
+            margin: var(--spacing-lg) auto 0;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            padding-left: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--border-glow);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xl);
+            grid-column: 1 / -1;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .no-results h3 {
+            font-family: var(--font-display);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .no-results p {
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+        <div class="scan-line"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <h1><i class="fas fa-newspaper"></i> Blog</h1>
+        <p>Articoli, guide e approfondimenti sulla cybersecurity</p>
+        
+        <!-- Search -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="blog-search" placeholder="Cerca articoli...">
+        </div>
+        
+        <!-- Filters -->
+        <div class="blog-filters" id="blog-filters">
+            <button class="filter-btn active" data-filter="all">Tutti</button>
+            <!-- I filtri per categoria verranno generati dinamicamente -->
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="blog-section">
+        <div class="blog-grid" id="blog-grid">
+            <!-- Articoli caricati dinamicamente -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="index.html">Home</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+                <p class="footer-powered">Powered by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+        // Articles data - AGGIUNGI QUI I TUOI ARTICOLI
+        const allArticles = [
+            // Esempio di struttura articolo:
+            // {
+            //     id: 'nome-articolo',
+            //     title: 'Titolo Articolo',
+            //     description: 'Descrizione breve dell\'articolo...',
+            //     category: 'Categoria',
+            //     date: '2026-02-04',
+            //     readTime: '5 min',
+            //     image: 'assets/images/articolo.jpg',
+            //     url: 'articles/nome-articolo.html',
+            //     tags: ['tag1', 'tag2']
+            // }
+        ];
+        
+        // Initialize blog page
+        document.addEventListener('DOMContentLoaded', function() {
+            initBlogPage();
+        });
+        
+        function initBlogPage() {
+            renderArticles(allArticles);
+            generateFilters();
+            initSearch();
+            initFilters();
+        }
+        
+        function renderArticles(articles) {
+            const grid = document.getElementById('blog-grid');
+            grid.innerHTML = '';
+            
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Nessun articolo trovato</h3>
+                        <p>Non ci sono ancora articoli pubblicati o nessun risultato corrisponde alla ricerca.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            articles.forEach(article => {
+                const card = document.createElement('article');
+                card.className = 'article-card';
+                card.dataset.category = article.category.toLowerCase();
+                
+                card.innerHTML = `
+                    <div class="article-image">
+                        ${article.image 
+                            ? `<img src="${article.image}" alt="${article.title}" loading="lazy">`
+                            : `<i class="fas fa-shield-alt"></i>`
+                        }
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">${article.category}</span>
+                        <a href="${article.url}" class="article-title">${article.title}</a>
+                        <p class="article-excerpt">${article.description}</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                            <span><i class="fas fa-clock"></i> ${article.readTime}</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function generateFilters() {
+            const filtersContainer = document.getElementById('blog-filters');
+            const categories = [...new Set(allArticles.map(a => a.category))];
+            
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.dataset.filter = category.toLowerCase();
+                btn.textContent = category;
+                filtersContainer.appendChild(btn);
+            });
+        }
+        
+        function initFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter articles
+                    const filter = this.dataset.filter;
+                    const searchTerm = document.getElementById('blog-search').value.toLowerCase();
+                    
+                    let filtered = allArticles;
+                    
+                    if (filter !== 'all') {
+                        filtered = filtered.filter(a => a.category.toLowerCase() === filter);
+                    }
+                    
+                    if (searchTerm) {
+                        filtered = filtered.filter(a => 
+                            a.title.toLowerCase().includes(searchTerm) ||
+                            a.description.toLowerCase().includes(searchTerm)
+                        );
+                    }
+                    
+                    renderArticles(filtered);
+                });
+            });
+        }
+        
+        function initSearch() {
+            const searchInput = document.getElementById('blog-search');
+            let debounceTimer;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    const searchTerm = this.value.toLowerCase();
+                    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                    
+                    let filtered = allArticles;
+                    
+                    if (activeFilter !== 'all') {
+                        filtered = filtered.filter(a => a.category.toLowerCase() === activeFilter);
+                    }
+                    
+                    if (searchTerm) {
+                        filtered = filtered.filter(a => 
+                            a.title.toLowerCase().includes(searchTerm) ||
+                            a.description.toLowerCase().includes(searchTerm) ||
+                            (a.tags && a.tags.some(t => t.toLowerCase().includes(searchTerm)))
+                        );
+                    }
+                    
+                    renderArticles(filtered);
+                }, 300);
+            });
+        }
+        
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
+        }
+    </script>
+</body>
+</html>

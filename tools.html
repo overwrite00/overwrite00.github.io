@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CybersecurityZen Tools - Strumenti online per encoding, hashing, network analysis e altro">
+    <meta name="keywords" content="cybersecurity tools, base64, hash generator, ip lookup, dns, encoder, decoder">
+    <meta name="author" content="CybersecurityZen">
+    
+    <title>Tools | CybersecurityZen</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tools.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+        <div class="scan-line"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="blog.html" class="nav-link"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="tools.html" class="nav-link active"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Tools Hero -->
+    <section class="tools-hero">
+        <h1><i class="fas fa-toolbox"></i> Cybersecurity Tools</h1>
+        <p>Strumenti essenziali per encoding, hashing, analisi network e altro</p>
+        
+        <!-- Quick Navigation -->
+        <div class="tools-nav">
+            <a href="#encoding" class="tools-nav-item">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Encoding</span>
+            </a>
+            <a href="#crypto" class="tools-nav-item">
+                <i class="fas fa-fingerprint"></i>
+                <span>Hash & Crypto</span>
+            </a>
+            <a href="#network" class="tools-nav-item">
+                <i class="fas fa-network-wired"></i>
+                <span>Network</span>
+            </a>
+            <a href="#utilities" class="tools-nav-item">
+                <i class="fas fa-toolbox"></i>
+                <span>Utilities</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Tools Content -->
+    <main class="tools-main">
+        <div class="tools-container">
+            
+            <!-- ==================== ENCODING SECTION ==================== -->
+            <section class="tools-section" id="encoding">
+                <div class="section-header-left">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h2>Encoding / Decoding</h2>
+                </div>
+                
+                <!-- Base64 -->
+                <div class="tool-card" id="base64">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">B64</span>
+                            <h3>Base64 Encoder/Decoder</h3>
+                        </div>
+                        <button class="tool-info-btn" title="Info">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Input</label>
+                            <textarea id="base64-input" placeholder="Inserisci testo o stringa Base64..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="base64Encode()" class="tool-btn">
+                                <i class="fas fa-lock"></i> Encode
+                            </button>
+                            <button onclick="base64Decode()" class="tool-btn">
+                                <i class="fas fa-unlock"></i> Decode
+                            </button>
+                            <button onclick="clearTool('base64')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                            <button onclick="copyOutput('base64-output')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Output</label>
+                            <div id="base64-output" class="tool-output"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- URL Encoder -->
+                <div class="tool-card" id="url">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">URL</span>
+                            <h3>URL Encoder/Decoder</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Input</label>
+                            <textarea id="url-input" placeholder="Inserisci URL o testo..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="urlEncode()" class="tool-btn">
+                                <i class="fas fa-lock"></i> Encode
+                            </button>
+                            <button onclick="urlDecode()" class="tool-btn">
+                                <i class="fas fa-unlock"></i> Decode
+                            </button>
+                            <button onclick="clearTool('url')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                            <button onclick="copyOutput('url-output')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Output</label>
+                            <div id="url-output" class="tool-output"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- HTML Entities -->
+                <div class="tool-card" id="html">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">&lt;/&gt;</span>
+                            <h3>HTML Entities Encoder/Decoder</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Input</label>
+                            <textarea id="html-input" placeholder="Inserisci HTML o testo..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="htmlEncode()" class="tool-btn">
+                                <i class="fas fa-lock"></i> Encode
+                            </button>
+                            <button onclick="htmlDecode()" class="tool-btn">
+                                <i class="fas fa-unlock"></i> Decode
+                            </button>
+                            <button onclick="clearTool('html')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                            <button onclick="copyOutput('html-output')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Output</label>
+                            <div id="html-output" class="tool-output"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hex Converter -->
+                <div class="tool-card" id="hex">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">0x</span>
+                            <h3>Hex / Binary / Decimal Converter</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-grid-3">
+                            <div class="tool-input-group">
+                                <label>Decimal</label>
+                                <input type="text" id="hex-decimal" placeholder="255" oninput="convertFromDecimal()">
+                            </div>
+                            <div class="tool-input-group">
+                                <label>Hexadecimal</label>
+                                <input type="text" id="hex-hex" placeholder="FF" oninput="convertFromHex()">
+                            </div>
+                            <div class="tool-input-group">
+                                <label>Binary</label>
+                                <input type="text" id="hex-binary" placeholder="11111111" oninput="convertFromBinary()">
+                            </div>
+                        </div>
+                        <div class="tool-input-group">
+                            <label>Text ↔ Hex</label>
+                            <textarea id="hex-text" placeholder="Inserisci testo..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="textToHex()" class="tool-btn">
+                                Text → Hex
+                            </button>
+                            <button onclick="hexToText()" class="tool-btn">
+                                Hex → Text
+                            </button>
+                            <button onclick="clearHexTool()" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Output</label>
+                            <div id="hex-output" class="tool-output mono"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JWT Decoder -->
+                <div class="tool-card" id="jwt">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">JWT</span>
+                            <h3>JWT Decoder</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>JWT Token</label>
+                            <textarea id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="decodeJWT()" class="tool-btn">
+                                <i class="fas fa-key"></i> Decode
+                            </button>
+                            <button onclick="clearTool('jwt')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                        <div class="jwt-output-container">
+                            <div class="tool-output-group">
+                                <label>Header</label>
+                                <div id="jwt-header" class="tool-output mono"></div>
+                            </div>
+                            <div class="tool-output-group">
+                                <label>Payload</label>
+                                <div id="jwt-payload" class="tool-output mono"></div>
+                            </div>
+                            <div class="tool-output-group">
+                                <label>Signature</label>
+                                <div id="jwt-signature" class="tool-output mono"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================== CRYPTO SECTION ==================== -->
+            <section class="tools-section" id="crypto">
+                <div class="section-header-left">
+                    <i class="fas fa-fingerprint"></i>
+                    <h2>Hash & Crypto</h2>
+                </div>
+                
+                <!-- Hash Generator -->
+                <div class="tool-card" id="hash">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">#</span>
+                            <h3>Hash Generator</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Input</label>
+                            <textarea id="hash-input" placeholder="Inserisci testo da hashare..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="generateAllHashes()" class="tool-btn">
+                                <i class="fas fa-hashtag"></i> Generate All
+                            </button>
+                            <button onclick="clearTool('hash')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                        <div class="hash-outputs">
+                            <div class="hash-row">
+                                <span class="hash-label">MD5</span>
+                                <div id="hash-md5" class="hash-value" onclick="copyThis(this)"></div>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">SHA-1</span>
+                                <div id="hash-sha1" class="hash-value" onclick="copyThis(this)"></div>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">SHA-256</span>
+                                <div id="hash-sha256" class="hash-value" onclick="copyThis(this)"></div>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">SHA-512</span>
+                                <div id="hash-sha512" class="hash-value" onclick="copyThis(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Password Generator -->
+                <div class="tool-card" id="password">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge"><i class="fas fa-key"></i></span>
+                            <h3>Password Generator</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="password-config">
+                            <div class="config-row">
+                                <label>Lunghezza: <span id="pwd-len-display">16</span></label>
+                                <input type="range" id="pwd-length" min="4" max="128" value="16" oninput="updatePwdLength()">
+                            </div>
+                            <div class="config-checkboxes">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pwd-uppercase" checked>
+                                    <span>Maiuscole (A-Z)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pwd-lowercase" checked>
+                                    <span>Minuscole (a-z)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pwd-numbers" checked>
+                                    <span>Numeri (0-9)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pwd-symbols" checked>
+                                    <span>Simboli (!@#$...)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pwd-exclude-similar">
+                                    <span>Escludi simili (0O, 1lI)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="generatePassword()" class="tool-btn">
+                                <i class="fas fa-sync-alt"></i> Generate
+                            </button>
+                            <button onclick="generateMultiplePasswords()" class="tool-btn">
+                                <i class="fas fa-list"></i> Generate 5
+                            </button>
+                            <button onclick="copyOutput('pwd-output')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Password</label>
+                            <div id="pwd-output" class="tool-output mono password-output"></div>
+                            <div id="pwd-strength-bar" class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <div id="pwd-strength-text" class="strength-text"></div>
+                        </div>
+                        <div id="pwd-multiple" class="multiple-passwords"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================== NETWORK SECTION ==================== -->
+            <section class="tools-section" id="network">
+                <div class="section-header-left">
+                    <i class="fas fa-network-wired"></i>
+                    <h2>Network & DNS</h2>
+                </div>
+                
+                <!-- IP Info -->
+                <div class="tool-card" id="ip">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">IP</span>
+                            <h3>IP Address Lookup</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>IP Address (lascia vuoto per il tuo IP)</label>
+                            <input type="text" id="ip-input" placeholder="8.8.8.8">
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="lookupIP()" class="tool-btn">
+                                <i class="fas fa-search"></i> Lookup
+                            </button>
+                            <button onclick="getMyIP()" class="tool-btn">
+                                <i class="fas fa-user"></i> My IP
+                            </button>
+                        </div>
+                        <div id="ip-output" class="ip-info-grid"></div>
+                    </div>
+                </div>
+                
+                <!-- DNS Lookup -->
+                <div class="tool-card" id="dns">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">DNS</span>
+                            <h3>DNS Lookup</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Domain</label>
+                            <input type="text" id="dns-input" placeholder="example.com">
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="dnsLookup()" class="tool-btn">
+                                <i class="fas fa-search"></i> Lookup
+                            </button>
+                        </div>
+                        <div id="dns-output" class="tool-output mono"></div>
+                    </div>
+                </div>
+                
+                <!-- Subnet Calculator -->
+                <div class="tool-card" id="subnet">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">/24</span>
+                            <h3>Subnet Calculator</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-grid-2">
+                            <div class="tool-input-group">
+                                <label>IP Address</label>
+                                <input type="text" id="subnet-ip" placeholder="192.168.1.0">
+                            </div>
+                            <div class="tool-input-group">
+                                <label>CIDR / Subnet Mask</label>
+                                <input type="text" id="subnet-cidr" placeholder="24 or 255.255.255.0">
+                            </div>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="calculateSubnet()" class="tool-btn">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                        </div>
+                        <div id="subnet-output" class="subnet-info-grid"></div>
+                    </div>
+                </div>
+                
+                <!-- HTTP Headers -->
+                <div class="tool-card" id="headers">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">H</span>
+                            <h3>HTTP Headers Checker</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>URL</label>
+                            <input type="text" id="headers-input" placeholder="https://example.com">
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="checkHeaders()" class="tool-btn">
+                                <i class="fas fa-globe"></i> Check Headers
+                            </button>
+                        </div>
+                        <div id="headers-output" class="tool-output mono"></div>
+                        <p class="tool-note">
+                            <i class="fas fa-info-circle"></i> 
+                            Nota: A causa delle restrizioni CORS, alcuni header potrebbero non essere visibili.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================== UTILITIES SECTION ==================== -->
+            <section class="tools-section" id="utilities">
+                <div class="section-header-left">
+                    <i class="fas fa-toolbox"></i>
+                    <h2>Utilities</h2>
+                </div>
+                
+                <!-- Timestamp Converter -->
+                <div class="tool-card" id="timestamp">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge"><i class="fas fa-clock"></i></span>
+                            <h3>Timestamp Converter</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="current-time">
+                            <span>Current Unix Timestamp:</span>
+                            <span id="current-timestamp" class="mono"></span>
+                        </div>
+                        <div class="tool-grid-2">
+                            <div class="tool-input-group">
+                                <label>Unix Timestamp</label>
+                                <input type="text" id="ts-unix" placeholder="1704067200">
+                                <button onclick="convertFromUnix()" class="tool-btn-inline">Convert →</button>
+                            </div>
+                            <div class="tool-input-group">
+                                <label>Human Date</label>
+                                <input type="datetime-local" id="ts-human">
+                                <button onclick="convertToUnix()" class="tool-btn-inline">← Convert</button>
+                            </div>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Result</label>
+                            <div id="timestamp-output" class="tool-output"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Regex Tester -->
+                <div class="tool-card" id="regex">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">.*</span>
+                            <h3>Regex Tester</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-grid-2">
+                            <div class="tool-input-group">
+                                <label>Pattern</label>
+                                <input type="text" id="regex-pattern" placeholder="[a-z]+">
+                            </div>
+                            <div class="tool-input-group">
+                                <label>Flags</label>
+                                <input type="text" id="regex-flags" placeholder="gi" value="g">
+                            </div>
+                        </div>
+                        <div class="tool-input-group">
+                            <label>Test String</label>
+                            <textarea id="regex-input" placeholder="Testo da testare..."></textarea>
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="testRegex()" class="tool-btn">
+                                <i class="fas fa-play"></i> Test
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Matches</label>
+                            <div id="regex-output" class="tool-output"></div>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Highlighted</label>
+                            <div id="regex-highlighted" class="tool-output regex-highlight"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- URL Parser -->
+                <div class="tool-card" id="urlparser">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge"><i class="fas fa-link"></i></span>
+                            <h3>URL Parser</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>URL</label>
+                            <input type="text" id="urlparser-input" placeholder="https://user:pass@example.com:8080/path?query=value#hash">
+                        </div>
+                        <div class="tool-actions">
+                            <button onclick="parseURL()" class="tool-btn">
+                                <i class="fas fa-search"></i> Parse
+                            </button>
+                        </div>
+                        <div id="urlparser-output" class="url-parts-grid"></div>
+                    </div>
+                </div>
+                
+                <!-- String Utilities -->
+                <div class="tool-card" id="string">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <span class="tool-badge">Aa</span>
+                            <h3>String Utilities</h3>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div class="tool-input-group">
+                            <label>Input</label>
+                            <textarea id="string-input" placeholder="Inserisci testo..." oninput="updateStringStats()"></textarea>
+                        </div>
+                        <div class="string-stats" id="string-stats">
+                            <span>Caratteri: <strong>0</strong></span>
+                            <span>Parole: <strong>0</strong></span>
+                            <span>Righe: <strong>0</strong></span>
+                            <span>Bytes: <strong>0</strong></span>
+                        </div>
+                        <div class="tool-actions string-actions">
+                            <button onclick="stringUppercase()" class="tool-btn">UPPERCASE</button>
+                            <button onclick="stringLowercase()" class="tool-btn">lowercase</button>
+                            <button onclick="stringCapitalize()" class="tool-btn">Capitalize</button>
+                            <button onclick="stringReverse()" class="tool-btn">esreveR</button>
+                            <button onclick="stringTrim()" class="tool-btn">Trim</button>
+                            <button onclick="stringRemoveSpaces()" class="tool-btn">NoSpaces</button>
+                            <button onclick="copyOutput('string-output')" class="tool-btn tool-btn-secondary">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="tool-output-group">
+                            <label>Output</label>
+                            <div id="string-output" class="tool-output"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="index.html">Home</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+                <p class="footer-powered">Powered by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/tools-full.js"></script>
+</body>
+</html>
