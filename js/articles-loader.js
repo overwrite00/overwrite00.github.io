@@ -437,11 +437,17 @@ async function renderSingleArticle() {
     
     // Il contenuto è già nel JSON, non serve caricare il file .md
     if (!article.content) {
+        console.error('Articolo trovato ma senza contenuto:', article);
+        document.getElementById('article-header').innerHTML = `
+            <span class="article-category-tag">${article.category}</span>
+            <h1>${article.title}</h1>
+        `;
         document.getElementById('article-content').innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Contenuto non disponibile</h3>
-                <p>L'articolo esiste ma il contenuto non è stato caricato.</p>
+                <p>L'articolo esiste ma il contenuto non è stato caricato nel JSON.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Prova a svuotare la cache del browser (Ctrl+Shift+R) o verifica che data/articles.json contenga il campo "content".</p>
                 <a href="blog.html" class="btn btn-primary">Torna al Blog</a>
             </div>
         `;
@@ -495,7 +501,10 @@ async function renderSingleArticle() {
  * Genera una card articolo
  */
 function generateArticleCard(article) {
-    const imageHtml = article.image 
+    // Controlla se image è una stringa non vuota (non array vuoto, non null, non undefined)
+    const hasImage = article.image && typeof article.image === 'string' && article.image.trim() !== '';
+    
+    const imageHtml = hasImage
         ? `<img src="${article.image}" alt="${article.title}" class="article-card-image">`
         : `<div class="article-card-icon"><i class="fas fa-newspaper"></i></div>`;
     
