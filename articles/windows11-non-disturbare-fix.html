@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Guida completa per risolvere il problema della modalità Non Disturbare che si attiva automaticamente in Windows 11. Soluzioni dettagliate con comandi PowerShell e fix definitivo."
+        />
+        <meta
+            name="keywords"
+            content="cybersecurity, windows 11, non disturbare, focus assist, powershell, troubleshooting, system repair, cloudstore, registry fix"
+        />
+        <meta name="author" content="CybersecurityZen" />
+
+        <title>
+            Fix: Modalità Non Disturbare si Attiva da Sola in Windows 11 |
+            CybersecurityZen
+        </title>
+
+        <!-- Favicon -->
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>"
+        />
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+
+        <!-- Prism.js for code highlighting -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+        />
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="../css/style.css" />
+
+        <style>
+            /* Article Page Specific Styles */
+            .article-hero {
+                padding: calc(80px + var(--spacing-xl)) var(--spacing-lg)
+                    var(--spacing-xl);
+                background: linear-gradient(
+                    180deg,
+                    rgba(0, 240, 255, 0.03) 0%,
+                    transparent 100%
+                );
+            }
+
+            .article-hero-content {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .article-breadcrumb {
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-sm);
+                margin-bottom: var(--spacing-lg);
+                font-family: var(--font-mono);
+                font-size: 0.8rem;
+            }
+
+            .article-breadcrumb a {
+                color: var(--text-muted);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+
+            .article-breadcrumb a:hover {
+                color: var(--primary);
+            }
+
+            .article-breadcrumb span {
+                color: var(--text-muted);
+            }
+
+            .article-category-tag {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                color: var(--primary);
+                background: rgba(0, 240, 255, 0.1);
+                padding: var(--spacing-xs) var(--spacing-md);
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border-glow);
+                margin-bottom: var(--spacing-md);
+            }
+
+            .article-hero h1 {
+                font-family: var(--font-display);
+                font-size: clamp(1.75rem, 4vw, 2.75rem);
+                font-weight: 700;
+                line-height: 1.3;
+                margin-bottom: var(--spacing-lg);
+            }
+
+            .article-meta-info {
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-lg);
+                flex-wrap: wrap;
+                font-family: var(--font-display);
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+            }
+
+            .article-meta-info i {
+                color: var(--primary);
+                margin-right: var(--spacing-xs);
+            }
+
+            /* Article Content */
+            .article-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: var(--spacing-xl) var(--spacing-lg);
+            }
+
+            .article-content {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-primary);
+            }
+
+            .article-content h2 {
+                font-family: var(--font-display);
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-top: var(--spacing-xl);
+                margin-bottom: var(--spacing-md);
+                color: var(--text-primary);
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: var(--spacing-sm);
+            }
+
+            .article-content h3 {
+                font-family: var(--font-display);
+                font-size: 1.35rem;
+                font-weight: 600;
+                margin-top: var(--spacing-lg);
+                margin-bottom: var(--spacing-sm);
+                color: var(--text-primary);
+            }
+
+            .article-content p {
+                margin-bottom: var(--spacing-md);
+            }
+
+            .article-content a {
+                color: var(--primary);
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: var(--transition-fast);
+            }
+
+            .article-content a:hover {
+                border-bottom-color: var(--primary);
+            }
+
+            .article-content ul,
+            .article-content ol {
+                margin-bottom: var(--spacing-md);
+                padding-left: var(--spacing-lg);
+            }
+
+            .article-content li {
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .article-content code {
+                font-family: var(--font-mono);
+                font-size: 0.9em;
+                background: var(--bg-tertiary);
+                padding: 2px 6px;
+                border-radius: 4px;
+                color: var(--primary);
+            }
+
+            .article-content pre {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                padding: var(--spacing-md);
+                overflow-x: auto;
+                margin-bottom: var(--spacing-md);
+            }
+
+            .article-content pre code {
+                background: none;
+                padding: 0;
+                color: var(--text-primary);
+            }
+
+            .article-content blockquote {
+                border-left: 3px solid var(--primary);
+                padding-left: var(--spacing-md);
+                margin: var(--spacing-md) 0;
+                color: var(--text-secondary);
+                font-style: italic;
+            }
+
+            .article-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--radius-md);
+                margin: var(--spacing-md) 0;
+            }
+
+            /* Info Box */
+            .info-box {
+                background: rgba(0, 240, 255, 0.05);
+                border: 1px solid var(--border-glow);
+                border-radius: var(--radius-md);
+                padding: var(--spacing-md);
+                margin: var(--spacing-md) 0;
+            }
+
+            .info-box.warning {
+                background: rgba(245, 158, 11, 0.1);
+                border-color: rgba(245, 158, 11, 0.3);
+            }
+
+            .info-box.danger {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: rgba(239, 68, 68, 0.3);
+            }
+
+            .info-box.success {
+                background: rgba(34, 197, 94, 0.1);
+                border-color: rgba(34, 197, 94, 0.3);
+            }
+
+            .info-box-title {
+                font-family: var(--font-display);
+                font-weight: 600;
+                margin-bottom: var(--spacing-sm);
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-sm);
+            }
+
+            .info-box-title i {
+                color: var(--primary);
+            }
+
+            .info-box.warning .info-box-title i {
+                color: rgb(245, 158, 11);
+            }
+
+            .info-box.danger .info-box-title i {
+                color: rgb(239, 68, 68);
+            }
+
+            .info-box.success .info-box-title i {
+                color: rgb(34, 197, 94);
+            }
+
+            /* Article Tags & Share */
+            .article-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+                margin-top: var(--spacing-xl);
+                padding-top: var(--spacing-lg);
+                border-top: 1px solid var(--border-color);
+            }
+
+            .article-tag {
+                font-family: var(--font-mono);
+                font-size: 0.85rem;
+                color: var(--primary);
+                background: rgba(0, 240, 255, 0.1);
+                padding: var(--spacing-xs) var(--spacing-sm);
+                border-radius: var(--radius-sm);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+
+            .article-tag:hover {
+                background: rgba(0, 240, 255, 0.2);
+            }
+
+            .article-share {
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-md);
+                margin-top: var(--spacing-lg);
+                padding: var(--spacing-md);
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+            }
+
+            .article-share span {
+                font-family: var(--font-display);
+                font-weight: 600;
+                color: var(--text-secondary);
+            }
+
+            .share-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: var(--radius-sm);
+                background: var(--bg-tertiary);
+                color: var(--text-secondary);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+
+            .share-btn:hover {
+                background: var(--primary);
+                color: var(--bg-primary);
+                transform: translateY(-2px);
+            }
+
+            /* Related Articles */
+            .related-articles {
+                margin-top: var(--spacing-xl);
+                padding-top: var(--spacing-xl);
+                border-top: 1px solid var(--border-color);
+            }
+
+            .related-articles h3 {
+                font-family: var(--font-display);
+                font-size: 1.5rem;
+                margin-bottom: var(--spacing-md);
+            }
+
+            .related-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: var(--spacing-md);
+            }
+
+            .related-card {
+                padding: var(--spacing-md);
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                text-decoration: none;
+                transition: var(--transition-fast);
+            }
+
+            .related-card:hover {
+                border-color: var(--primary);
+                transform: translateY(-3px);
+            }
+
+            .related-card h4 {
+                font-family: var(--font-display);
+                font-size: 1rem;
+                color: var(--text-primary);
+                margin-bottom: var(--spacing-xs);
+            }
+
+            .related-card p {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Animated Background -->
+        <div class="cyber-bg">
+            <div class="grid-overlay"></div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="../index.html" class="nav-logo">
+                    <span class="logo-bracket">[</span>
+                    <span class="logo-text">CybersecurityZen</span>
+                    <span class="logo-bracket">]</span>
+                    <span class="logo-cursor">_</span>
+                </a>
+
+                <button class="nav-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu">
+                    <li>
+                        <a href="../index.html" class="nav-link"
+                            ><i class="fas fa-terminal"></i> Home</a
+                        >
+                    </li>
+                    <li>
+                        <a href="../blog.html" class="nav-link active"
+                            ><i class="fas fa-newspaper"></i> Blog</a
+                        >
+                    </li>
+                    <li>
+                        <a href="../tools.html" class="nav-link"
+                            ><i class="fas fa-wrench"></i> Tools</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://github.com/overwrite00"
+                            target="_blank"
+                            class="nav-link nav-github"
+                            ><i class="fab fa-github"></i> GitHub</a
+                        >
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Article Hero -->
+        <header class="article-hero">
+            <div class="article-hero-content">
+                <nav class="article-breadcrumb">
+                    <a href="../index.html">Home</a>
+                    <span>/</span>
+                    <a href="../blog.html">Blog</a>
+                    <span>/</span>
+                    <span>Windows 11 Non Disturbare Fix</span>
+                </nav>
+
+                <span class="article-category-tag">TROUBLESHOOTING</span>
+
+                <h1>Modalità Non Disturbare si Attiva da Sola in Windows 11</h1>
+
+                <div class="article-meta-info">
+                    <span><i class="fas fa-calendar"></i> 5 Febbraio 2026</span>
+                    <span><i class="fas fa-clock"></i> 15 min lettura</span>
+                    <span><i class="fas fa-user"></i> CybersecurityZen</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Article Content -->
+        <article class="article-container">
+            <div class="article-content">
+                <!-- CONTENUTO DELL'ARTICOLO INIZIA QUI -->
+
+                <p>
+                    Hai notato che la
+                    <strong
+                        >modalità Non Disturbare di Windows 11 si attiva da
+                        sola</strong
+                    >
+                    anche dopo averla disabilitata manualmente? Questo
+                    comportamento anomalo è causato da file di sistema corrotti
+                    e chiavi del registro danneggiate. In questa guida ti
+                    mostrerò come risolvere definitivamente il problema seguendo
+                    una procedura step-by-step testata e funzionante.
+                </p>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-triangle"></i> Prima di
+                        Iniziare
+                    </div>
+                    <p>
+                        Questa guida richiede l'uso di PowerShell con privilegi
+                        amministrativi e modifiche al registro di sistema. Segui
+                        attentamente ogni passaggio nell'ordine indicato. Ti
+                        consiglio di creare un punto di ripristino prima di
+                        procedere.
+                    </p>
+                </div>
+
+                <h2>📋 Prerequisiti</h2>
+
+                <p>Prima di iniziare, assicurati di avere:</p>
+
+                <ul>
+                    <li>✅ Windows 11 (funziona anche su Windows 10)</li>
+                    <li>✅ Accesso come amministratore</li>
+                    <li>✅ Connessione internet stabile</li>
+                    <li>✅ Almeno 30 minuti di tempo a disposizione</li>
+                    <li>
+                        ✅ Tutti i file importanti salvati (faremo dei riavvii)
+                    </li>
+                </ul>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-info-circle"></i> Sintomi del Problema
+                    </div>
+                    <p>Questa guida risolve questi comportamenti:</p>
+                    <ul style="margin-bottom: 0">
+                        <li>
+                            La modalità Non Disturbare si attiva automaticamente
+                            senza motivo
+                        </li>
+                        <li>
+                            Si riattiva dopo ogni riavvio anche se disabilitata
+                        </li>
+                        <li>
+                            Le regole automatiche nelle impostazioni si
+                            riattivano da sole
+                        </li>
+                        <li>
+                            Il problema persiste anche dopo aver disabilitato
+                            tutte le opzioni
+                        </li>
+                        <li>
+                            In alcuni casi, la modalità rimane sempre attiva
+                            (comportamento invertito)
+                        </li>
+                    </ul>
+                </div>
+
+                <h2>🔧 Fase 1: Diagnosi e Riparazione File di Sistema</h2>
+
+                <p>
+                    Iniziamo identificando e riparando eventuali file di sistema
+                    corrotti che potrebbero causare il problema.
+                </p>
+
+                <h3>Step 1.1: Esegui SFC Scan</h3>
+
+                <p>
+                    <strong>1.</strong> Premi <code>Win + X</code> e seleziona
+                    <strong>Windows PowerShell (Admin)</strong> o
+                    <strong>Terminale (Admin)</strong>
+                </p>
+
+                <p><strong>2.</strong> Incolla questo comando e premi Invio:</p>
+
+                <pre><code class="language-powershell">sfc /scannow</code></pre>
+
+                <p>
+                    <strong>3.</strong> Attendi il completamento della scansione
+                    (richiede 10-15 minuti). Non chiudere la finestra.
+                </p>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-lightbulb"></i> Cosa Fa Questo Comando
+                    </div>
+                    <p>
+                        SFC (System File Checker) scansiona tutti i file di
+                        sistema protetti e sostituisce le versioni corrotte con
+                        copie corrette dal cache di Windows.
+                    </p>
+                </div>
+
+                <h3>Step 1.2: Analizza i Risultati</h3>
+
+                <p>
+                    <strong>4.</strong> Al termine, leggi il messaggio finale.
+                    Potresti vedere uno di questi risultati:
+                </p>
+
+                <ul>
+                    <li>
+                        ✅
+                        <strong
+                            >"Protezione risorse di Windows: file danneggiati
+                            trovati e ripristinati"</strong
+                        >
+                        → Ottimo! Procedi al passo successivo
+                    </li>
+                    <li>
+                        ✅ <strong>"Nessuna violazione di integrità"</strong> →
+                        Salta alla Fase 2
+                    </li>
+                    <li>
+                        ❌
+                        <strong
+                            >"File danneggiati trovati ma impossibile
+                            ripristinare"</strong
+                        >
+                        → Esegui prima DISM (vedi sotto)
+                    </li>
+                </ul>
+
+                <h3>Step 1.3: Estrai i Dettagli (Opzionale)</h3>
+
+                <p>
+                    Se vuoi vedere esattamente quali file sono stati riparati,
+                    esegui:
+                </p>
+
+                <pre><code class="language-powershell">Select-String -Path "$env:windir\Logs\CBS\CBS.log" -Pattern "\[SR\]" | Out-File "$env:userprofile\Desktop\sfcdetails.txt"</code></pre>
+
+                <p>
+                    Questo crea un file <code>sfcdetails.txt</code> sul Desktop
+                    con tutti i dettagli della scansione.
+                </p>
+
+                <h3>Step 1.4: Esegui DISM</h3>
+
+                <p>
+                    <strong>5.</strong> Esegui DISM per riparare l'immagine di
+                    sistema che SFC usa come riferimento:
+                </p>
+
+                <pre><code class="language-powershell">DISM /Online /Cleanup-Image /RestoreHealth</code></pre>
+
+                <p>
+                    <strong>6.</strong> Attendi il completamento (può richiedere
+                    15-20 minuti). Serve una connessione internet attiva.
+                </p>
+
+                <h3>Step 1.5: Riavvia il PC</h3>
+
+                <p>
+                    <strong>7.</strong> Riavvia il computer per applicare le
+                    riparazioni:
+                </p>
+
+                <pre><code class="language-powershell">shutdown /r /t 0</code></pre>
+
+                <p>Oppure riavvia manualmente dal menu Start.</p>
+
+                <div class="info-box success">
+                    <div class="info-box-title">
+                        <i class="fas fa-check-circle"></i> Checkpoint
+                    </div>
+                    <p>
+                        Dopo il riavvio, testa se la modalità Non Disturbare
+                        funziona correttamente. Se il problema persiste,
+                        continua con la Fase 2.
+                    </p>
+                </div>
+
+                <h2>🔍 Fase 2: Verifica Salute del Sistema</h2>
+
+                <p>
+                    Prima di procedere con soluzioni più invasive, verifichiamo
+                    che non ci siano problemi hardware.
+                </p>
+
+                <h3>Step 2.1: Controlla lo Stato del Disco</h3>
+
+                <p>
+                    <strong>1.</strong> Apri PowerShell come amministratore ed
+                    esegui questi 3 comandi:
+                </p>
+
+                <pre><code class="language-powershell"># Controlla lo stato fisico del disco
+Get-PhysicalDisk | Select-Object FriendlyName, HealthStatus, OperationalStatus
+
+# Verifica errori SMART
+Get-PhysicalDisk | Get-StorageReliabilityCounter | Select-Object DeviceId, Wear, ReadErrorsTotal, WriteErrorsTotal
+
+# Controlla lo stato dei volumi
+Get-Volume | Select-Object DriveLetter, FileSystemLabel, HealthStatus</code></pre>
+
+                <p>
+                    <strong>2.</strong> Verifica che tutti i valori di
+                    <code>HealthStatus</code> siano <strong>"Healthy"</strong> o
+                    <strong>"OK"</strong>
+                </p>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-triangle"></i> Se Trovi
+                        Errori
+                    </div>
+                    <p>
+                        Se vedi <code>ReadErrorsTotal</code> o
+                        <code>WriteErrorsTotal</code> diversi da zero, o se
+                        l'HealthStatus non è OK, potresti avere un problema
+                        hardware con il disco. In questo caso, esegui un backup
+                        completo prima di continuare.
+                    </p>
+                </div>
+
+                <h2>🎯 Fase 3: Identificazione del Problema nel Registro</h2>
+
+                <p>
+                    Se sei arrivato fin qui, il problema risiede nelle chiavi
+                    del registro CloudStore. Ora le localizziamo.
+                </p>
+
+                <h3>Step 3.1: Trova le Chiavi Corrotte</h3>
+
+                <p>
+                    <strong>1.</strong> Esegui questo comando per identificare
+                    le chiavi problematiche:
+                </p>
+
+                <pre><code class="language-powershell">Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current" -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "*donotdisturb*" }</code></pre>
+
+                <p>
+                    <strong>2.</strong> Dovresti vedere apparire 2-3 chiavi con
+                    nomi tipo:
+                </p>
+                <ul>
+                    <li>
+                        <code
+                            >default$windows.data.donotdisturb.quiethourssettings</code
+                        >
+                    </li>
+                    <li>
+                        <code
+                            >default$windows.data.donotdisturb.quietmoment$quietmomentlist</code
+                        >
+                    </li>
+                </ul>
+
+                <p>
+                    Se vedi queste chiavi, hai confermato il problema. Procedi
+                    con la soluzione definitiva.
+                </p>
+
+                <h2>💣 Fase 4: Soluzione Definitiva - Reset CloudStore</h2>
+
+                <p>
+                    Ora elimineremo completamente il database CloudStore
+                    corrotto. Windows lo ricreerà pulito al riavvio.
+                </p>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">
+                        <i class="fas fa-skull-crossbones"></i> ATTENZIONE -
+                        LEGGI PRIMA
+                    </div>
+                    <p>
+                        <strong
+                            >Questa procedura elimina TUTTE le impostazioni di
+                            sincronizzazione cloud del tuo profilo
+                            utente.</strong
+                        >
+                        Windows le ricreerà automaticamente, ma alcune
+                        preferenze personali potrebbero dover essere
+                        riconfigurate. I tuoi file e applicazioni NON saranno
+                        toccati.
+                    </p>
+                </div>
+
+                <h3>Step 4.1: Crea un Backup di Sicurezza</h3>
+
+                <p>
+                    <strong>1.</strong> Prima di tutto, crea un backup del
+                    registro:
+                </p>
+
+                <pre><code class="language-powershell">reg export "HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current" "$env:userprofile\Desktop\CloudStore_Backup.reg" /y</code></pre>
+
+                <p>
+                    Vedrai il messaggio
+                    <strong>"Operazione completata"</strong>. Il file di backup
+                    è ora sul tuo Desktop.
+                </p>
+
+                <h3>Step 4.2: Ferma i Servizi di Protezione</h3>
+
+                <p>
+                    <strong>2.</strong> Copia e incolla questo blocco di comandi
+                    (tutto insieme):
+                </p>
+
+                <pre><code class="language-powershell">Stop-Service -Name "WpnService" -Force -ErrorAction SilentlyContinue
+Stop-Service -Name "PushNotificationService" -Force -ErrorAction SilentlyContinue
+Stop-Service -Name "OneSyncSvc" -Force -ErrorAction SilentlyContinue
+Stop-Service -Name "CDPUserSvc" -Force -ErrorAction SilentlyContinue
+Stop-Service -Name "UnistoreSvc" -Force -ErrorAction SilentlyContinue</code></pre>
+
+                <p>
+                    Questi comandi fermano temporaneamente i servizi che
+                    proteggono il CloudStore.
+                </p>
+
+                <h3>Step 4.3: Prendi Ownership delle Chiavi</h3>
+
+                <p>
+                    <strong>3.</strong> Copia e incolla questo blocco (tutto
+                    insieme) per prendere il controllo delle chiavi protette:
+                </p>
+
+                <pre><code class="language-powershell">$key1 = "HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default`$windows.data.donotdisturb.quiethourssettings"
+$key2 = "HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default`$windows.data.donotdisturb.quietmoment`$quietmomentlist"
+
+$acl1 = Get-Acl -Path "Registry::$key1"
+$user = [System.Security.Principal.WindowsIdentity]::GetCurrent().User
+$acl1.SetOwner($user)
+Set-Acl -Path "Registry::$key1" -AclObject $acl1
+
+$acl2 = Get-Acl -Path "Registry::$key2"
+$acl2.SetOwner($user)
+Set-Acl -Path "Registry::$key2" -AclObject $acl2
+
+Write-Host "Ownership acquisito con successo!" -ForegroundColor Green</code></pre>
+
+                <h3>Step 4.4: Elimina il CloudStore Corrotto</h3>
+
+                <p>
+                    <strong>4.</strong> Ora eliminiamo l'intero CloudStore con
+                    questo comando:
+                </p>
+
+                <pre><code class="language-powershell">Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store" -Recurse -Force</code></pre>
+
+                <p>
+                    <strong>5.</strong> Se il comando non da errori, il
+                    CloudStore è stato eliminato correttamente!
+                </p>
+
+                <h3>Step 4.5: Riavvia i Servizi</h3>
+
+                <p>
+                    <strong>6.</strong> Riavvia i servizi fermati in precedenza:
+                </p>
+
+                <pre><code class="language-powershell">Start-Service -Name "WpnService" -ErrorAction SilentlyContinue
+Start-Service -Name "PushNotificationService" -ErrorAction SilentlyContinue
+Start-Service -Name "OneSyncSvc" -ErrorAction SilentlyContinue
+Start-Service -Name "CDPUserSvc" -ErrorAction SilentlyContinue
+Start-Service -Name "UnistoreSvc" -ErrorAction SilentlyContinue</code></pre>
+
+                <h3>Step 4.6: Riavvia il PC</h3>
+
+                <p>
+                    <strong>7.</strong> Riavvia il computer per permettere a
+                    Windows di ricreare il CloudStore pulito:
+                </p>
+
+                <pre><code class="language-powershell">shutdown /r /t 30</code></pre>
+
+                <p>
+                    Il PC si riavvierà tra 30 secondi. Salva tutti i file
+                    aperti!
+                </p>
+
+                <h2>✅ Fase 5: Verifica e Configurazione Finale</h2>
+
+                <p>
+                    Dopo il riavvio, Windows avrà ricreato automaticamente un
+                    CloudStore nuovo e pulito.
+                </p>
+
+                <h3>Step 5.1: Controlla la Modalità Non Disturbare</h3>
+
+                <p>
+                    <strong>1.</strong> Apri le Impostazioni di Windows (<code
+                        >Win + I</code
+                    >)
+                </p>
+
+                <p>
+                    <strong>2.</strong> Vai in
+                    <strong>Sistema → Notifiche → Non disturbare</strong>
+                </p>
+
+                <p>
+                    <strong>3.</strong> Verifica che la modalità Non Disturbare
+                    sia <strong>DISATTIVATA</strong>
+                </p>
+
+                <p>
+                    <strong>4.</strong> Espandi
+                    <strong
+                        >"Attiva automaticamente lo stato Non
+                        disturbare"</strong
+                    >
+                </p>
+
+                <p>
+                    <strong>5.</strong>
+                    <strong>Disabilita tutte le 4 regole automatiche</strong>:
+                </p>
+                <ul>
+                    <li>❌ Durante la duplicazione dello schermo</li>
+                    <li>❌ Durante la riproduzione di un gioco</li>
+                    <li>
+                        ❌ Durante l'uso di un'app in modalità schermo intero
+                    </li>
+                    <li>❌ Per la prima ora dopo un aggiornamento</li>
+                </ul>
+
+                <h3>Step 5.2: Test del Funzionamento</h3>
+
+                <p><strong>6.</strong> Esegui questi test:</p>
+
+                <ol>
+                    <li>
+                        ✅ Apri e chiudi alcune applicazioni (es. Chrome,
+                        Esplora File)
+                    </li>
+                    <li>✅ Massimizza e riduci a icona delle finestre</li>
+                    <li>✅ Aspetta 5 minuti senza toccare nulla</li>
+                    <li>✅ Ricontrolla le impostazioni Non Disturbare</li>
+                </ol>
+
+                <p>
+                    <strong>7.</strong> Se Non Disturbare rimane disattivato →
+                    <strong>PROBLEMA RISOLTO!</strong> 🎉
+                </p>
+
+                <h3>Step 5.3: Test Finale con Riavvio</h3>
+
+                <p>
+                    <strong>8.</strong> Esegui un ultimo test riavviando il PC:
+                </p>
+
+                <pre><code class="language-powershell">shutdown /r /t 0</code></pre>
+
+                <p>
+                    <strong>9.</strong> Dopo il riavvio, verifica di nuovo le
+                    impostazioni Non Disturbare
+                </p>
+
+                <p>
+                    <strong>10.</strong> Se tutto rimane come configurato →
+                    <strong>SUCCESSO TOTALE!</strong> ✅
+                </p>
+
+                <div class="info-box success">
+                    <div class="info-box-title">
+                        <i class="fas fa-trophy"></i> Congratulazioni!
+                    </div>
+                    <p>
+                        Hai risolto definitivamente il problema! Il CloudStore è
+                        ora pulito e la modalità Non Disturbare risponderà
+                        correttamente alle tue impostazioni.
+                    </p>
+                </div>
+
+                <h2>🆘 Soluzioni Alternative (Se il Problema Persiste)</h2>
+
+                <p>
+                    Se dopo aver seguito tutti i passaggi il problema persiste,
+                    prova queste soluzioni alternative.
+                </p>
+
+                <h3>Opzione A: Modalità Provvisoria</h3>
+
+                <p>
+                    <strong>1.</strong> Riavvia Windows in Modalità Provvisoria:
+                </p>
+
+                <pre><code class="language-powershell">shutdown /r /o /t 0</code></pre>
+
+                <p>
+                    <strong>2.</strong> Seleziona:
+                    <strong
+                        >Risoluzione problemi → Opzioni avanzate → Impostazioni
+                        di avvio</strong
+                    >
+                </p>
+
+                <p>
+                    <strong>3.</strong> Premi <strong>4</strong> o
+                    <strong>F4</strong> per avviare in Modalità Provvisoria
+                </p>
+
+                <p>
+                    <strong>4.</strong> Una volta avviato, apri
+                    <code>regedit</code> (premi <code>Win + R</code>, scrivi
+                    <code>regedit</code>)
+                </p>
+
+                <p><strong>5.</strong> Naviga a:</p>
+                <pre><code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current</code></pre>
+
+                <p>
+                    <strong>6.</strong> Trova tutte le cartelle che iniziano con
+                    <code>default$windows.data.donotdisturb</code>
+                </p>
+
+                <p>
+                    <strong>7.</strong> Elimina ogni cartella (tasto destro →
+                    Elimina)
+                </p>
+
+                <p><strong>8.</strong> Riavvia normalmente</p>
+
+                <h3>Opzione B: Nuovo Profilo Utente</h3>
+
+                <p>Se niente funziona, crea un nuovo profilo utente Windows:</p>
+
+                <p>
+                    <strong>1.</strong> Vai in
+                    <strong
+                        >Impostazioni → Account → Famiglia e altri
+                        utenti</strong
+                    >
+                </p>
+
+                <p>
+                    <strong>2.</strong> Clicca
+                    <strong>"Aggiungi un altro utente a questo PC"</strong>
+                </p>
+
+                <p><strong>3.</strong> Crea un nuovo account amministratore</p>
+
+                <p>
+                    <strong>4.</strong> Disconnettiti e accedi con il nuovo
+                    account
+                </p>
+
+                <p>
+                    <strong>5.</strong> Il problema Non Disturbare non sarà
+                    presente nel nuovo profilo
+                </p>
+
+                <h3>Opzione C: Ripristino di Windows (Ultima Risorsa)</h3>
+
+                <p>
+                    Come ultima opzione, usa il ripristino che mantiene file e
+                    app:
+                </p>
+
+                <p>
+                    <strong>1.</strong> Vai in
+                    <strong>Impostazioni → Sistema → Ripristino</strong>
+                </p>
+
+                <p>
+                    <strong>2.</strong> Clicca
+                    <strong>"Reimposta il PC"</strong>
+                </p>
+
+                <p>
+                    <strong>3.</strong> Seleziona
+                    <strong>"Mantieni i miei file"</strong>
+                </p>
+
+                <p><strong>4.</strong> Segui la procedura guidata</p>
+
+                <h2>🛡️ Prevenzione: Come Evitare il Problema in Futuro</h2>
+
+                <p>
+                    Segui questi consigli per mantenere il sistema sano e
+                    prevenire corruzioni future:
+                </p>
+
+                <h3>Manutenzione Periodica</h3>
+
+                <p><strong>Esegui SFC ogni 2-3 mesi:</strong></p>
+                <pre><code class="language-powershell">sfc /scannow</code></pre>
+
+                <p><strong>Esegui DISM ogni 4-6 mesi:</strong></p>
+                <pre><code class="language-powershell">DISM /Online /Cleanup-Image /RestoreHealth</code></pre>
+
+                <h3>Buone Pratiche</h3>
+
+                <ul>
+                    <li>
+                        ✅ Mantieni Windows aggiornato con tutti gli ultimi
+                        patch
+                    </li>
+                    <li>
+                        ✅ Non forzare mai lo spegnimento durante gli
+                        aggiornamenti
+                    </li>
+                    <li>✅ Usa un buon antivirus aggiornato</li>
+                    <li>✅ Controlla periodicamente la salute del disco</li>
+                    <li>
+                        ✅ Crea punti di ripristino prima di modifiche
+                        importanti
+                    </li>
+                </ul>
+
+                <h3>Monitoraggio Continuo</h3>
+
+                <p>
+                    Aggiungi questo comando ai segnalibri per controllare
+                    velocemente la salute del disco:
+                </p>
+
+                <pre><code class="language-powershell">Get-PhysicalDisk | Select-Object FriendlyName, HealthStatus</code></pre>
+
+                <h2>📚 Riepilogo della Guida</h2>
+
+                <p>
+                    Ecco un riepilogo veloce di tutti i passaggi che hai
+                    seguito:
+                </p>
+
+                <ol>
+                    <li>
+                        ✅ <strong>Fase 1:</strong> Eseguito SFC e DISM per
+                        riparare file di sistema corrotti
+                    </li>
+                    <li>
+                        ✅ <strong>Fase 2:</strong> Verificato la salute
+                        hardware del disco
+                    </li>
+                    <li>
+                        ✅ <strong>Fase 3:</strong> Identificato le chiavi
+                        CloudStore corrotte
+                    </li>
+                    <li>
+                        ✅ <strong>Fase 4:</strong> Eliminato completamente il
+                        CloudStore e forzato la ricreazione
+                    </li>
+                    <li>
+                        ✅ <strong>Fase 5:</strong> Verificato il funzionamento
+                        e configurato le impostazioni
+                    </li>
+                </ol>
+
+                <p>
+                    Questo approccio metodico garantisce una
+                    <strong>risoluzione definitiva</strong> del problema senza
+                    dover ripristinare completamente il sistema operativo.
+                </p>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-question-circle"></i> Hai Ancora
+                        Problemi?
+                    </div>
+                    <p>
+                        Se dopo aver seguito questa guida il problema persiste,
+                        potrebbe esserci un problema più profondo con il
+                        sistema. Considera di consultare il supporto Microsoft o
+                        un tecnico specializzato.
+                    </p>
+                </div>
+
+                <blockquote>
+                    "La manutenzione preventiva è sempre più semplice della
+                    riparazione. Dedica 10 minuti ogni mese alla salute del tuo
+                    sistema e risparmierai ore di troubleshooting in futuro."
+                </blockquote>
+
+                <!-- CONTENUTO DELL'ARTICOLO FINISCE QUI -->
+
+                <!-- Tags -->
+                <div class="article-tags">
+                    <a href="#" class="article-tag">#windows11</a>
+                    <a href="#" class="article-tag">#troubleshooting</a>
+                    <a href="#" class="article-tag">#powershell</a>
+                    <a href="#" class="article-tag">#systemrepair</a>
+                    <a href="#" class="article-tag">#registry</a>
+                    <a href="#" class="article-tag">#cloudstore</a>
+                    <a href="#" class="article-tag">#nondisturbare</a>
+                </div>
+
+                <!-- Share -->
+                <div class="article-share">
+                    <span>Condividi:</span>
+                    <a
+                        href="#"
+                        class="share-btn"
+                        title="Condividi su Twitter"
+                        onclick="shareOnTwitter()"
+                    >
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a
+                        href="#"
+                        class="share-btn"
+                        title="Condividi su LinkedIn"
+                        onclick="shareOnLinkedIn()"
+                    >
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a
+                        href="#"
+                        class="share-btn"
+                        title="Copia link"
+                        onclick="copyLink()"
+                    >
+                        <i class="fas fa-link"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <span class="footer-logo">[CybersecurityZen]</span>
+                        <p>Security Research • Tools • Knowledge</p>
+                    </div>
+
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>Navigazione</h4>
+                            <a href="../index.html">Home</a>
+                            <a href="../blog.html">Blog</a>
+                            <a href="../tools.html">Tools</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Social</h4>
+                            <a
+                                href="https://github.com/overwrite00"
+                                target="_blank"
+                                ><i class="fab fa-github"></i> GitHub</a
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>
+                        &copy; <span id="current-year"></span> CybersecurityZen.
+                        All rights reserved.
+                    </p>
+                    <p class="footer-powered">
+                        Powered by
+                        <a href="https://pages.github.com/" target="_blank"
+                            >GitHub Pages</a
+                        >
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Back to Top Button -->
+        <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+        <script src="../js/main.js"></script>
+        <script>
+            // Share functions
+            function shareOnTwitter() {
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent(document.title);
+                window.open(
+                    `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
+                    '_blank',
+                );
+            }
+
+            function shareOnLinkedIn() {
+                const url = encodeURIComponent(window.location.href);
+                window.open(
+                    `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+                    '_blank',
+                );
+            }
+
+            function copyLink() {
+                navigator.clipboard
+                    .writeText(window.location.href)
+                    .then(() => showToast('Link copiato negli appunti!'))
+                    .catch(() => showToast('Errore durante la copia', 'error'));
+            }
+        </script>
+    </body>
+</html>
