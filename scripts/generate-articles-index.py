@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Script per generare articles.json dai file Markdown nella cartella articles/
-Legge il frontmatter YAML di ogni file .md e crea un indice JSON.
-Include il contenuto completo dell'articolo nel JSON.
+Script per generare articles.json e pagine HTML statiche dai file Markdown.
+Include meta tag SEO e Open Graph per anteprime social corrette.
 
 Uso: python scripts/generate-articles-index.py
 """
@@ -16,6 +15,7 @@ from pathlib import Path
 # Configurazione
 ARTICLES_DIR = Path("articles")
 OUTPUT_FILE = Path("data/articles.json")
+SITE_URL = "https://overwrite00.github.io"
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """
@@ -117,6 +117,11 @@ def process_article(filepath: Path) -> dict | None:
     # Genera ID dal nome file
     article_id = filepath.stem  # nome-articolo da nome-articolo.md
     
+    # Gestisci il campo image
+    image = metadata.get('image', '')
+    if isinstance(image, list):
+        image = ''
+    
     # Costruisci oggetto articolo CON il contenuto
     article = {
         'id': article_id,
@@ -126,13 +131,561 @@ def process_article(filepath: Path) -> dict | None:
         'date': metadata.get('date', datetime.now().strftime('%Y-%m-%d')),
         'readTime': metadata.get('readTime', estimate_read_time(body)),
         'author': metadata.get('author', 'CybersecurityZen'),
-        'image': metadata.get('image', ''),
+        'image': image,
         'tags': metadata.get('tags', []),
-        'content': body,  # <-- Contenuto Markdown incluso nel JSON
+        'content': body,
         'draft': metadata.get('draft', 'false').lower() == 'true'
     }
     
     return article
+
+
+def generate_article_html(article: dict) -> str:
+    """Genera la pagina HTML statica per un articolo con meta tag SEO."""
+    
+    title = article['title']
+    description = article['description']
+    image = article['image'] if article['image'] else f"{SITE_URL}/assets/images/og-default.png"
+    url = f"{SITE_URL}/articles/{article['id']}.html"
+    date = article['date']
+    author = article['author']
+    category = article['category']
+    tags = ', '.join(article['tags']) if article['tags'] else 'cybersecurity'
+    
+    # Formatta la data per display
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_formatted = date_obj.strftime('%d %B %Y')
+    except:
+        date_formatted = date
+    
+    html = f'''<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>{title} | CybersecurityZen</title>
+    <meta name="description" content="{description}">
+    <meta name="keywords" content="{tags}">
+    <meta name="author" content="{author}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{url}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{url}">
+    <meta property="og:title" content="{title}">
+    <meta property="og:description" content="{description}">
+    <meta property="og:image" content="{image}">
+    <meta property="og:site_name" content="CybersecurityZen">
+    <meta property="article:published_time" content="{date}">
+    <meta property="article:author" content="{author}">
+    <meta property="article:section" content="{category}">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{url}">
+    <meta name="twitter:title" content="{title}">
+    <meta name="twitter:description" content="{description}">
+    <meta name="twitter:image" content="{image}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Highlight.js per syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        /* Article Page Styles */
+        .article-hero {{
+            padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
+        }}
+        
+        .article-hero-content {{
+            max-width: 800px;
+            margin: 0 auto;
+        }}
+        
+        .article-breadcrumb {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }}
+        
+        .article-breadcrumb a {{
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }}
+        
+        .article-breadcrumb a:hover {{
+            color: var(--primary);
+        }}
+        
+        .article-category-tag {{
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-glow);
+            margin-bottom: var(--spacing-md);
+        }}
+        
+        .article-hero h1 {{
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: var(--spacing-lg);
+        }}
+        
+        .article-meta-info {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }}
+        
+        .article-meta-info i {{
+            color: var(--primary);
+            margin-right: var(--spacing-xs);
+        }}
+        
+        /* Article Content */
+        .article-container {{
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }}
+        
+        .article-content {{
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }}
+        
+        .article-content h1 {{
+            display: none;
+        }}
+        
+        .article-content h2 {{
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }}
+        
+        .article-content h3 {{
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }}
+        
+        .article-content h4 {{
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+        }}
+        
+        .article-content p {{
+            margin-bottom: var(--spacing-md);
+        }}
+        
+        .article-content a {{
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-fast);
+        }}
+        
+        .article-content a:hover {{
+            border-bottom-color: var(--primary);
+        }}
+        
+        .article-content ul,
+        .article-content ol {{
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-lg);
+        }}
+        
+        .article-content li {{
+            margin-bottom: var(--spacing-sm);
+        }}
+        
+        .article-content strong {{
+            color: var(--text-primary);
+            font-weight: 600;
+        }}
+        
+        .article-content em {{
+            font-style: italic;
+        }}
+        
+        .article-content code {{
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+        }}
+        
+        .article-content pre {{
+            background: #1e1e2e;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+        }}
+        
+        .article-content pre code {{
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }}
+        
+        .article-content blockquote {{
+            border-left: 3px solid var(--primary);
+            padding-left: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: rgba(0, 240, 255, 0.03);
+            padding: var(--spacing-md);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }}
+        
+        .article-content img {{
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
+            border: 1px solid var(--border-color);
+        }}
+        
+        .article-content table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: 0.95rem;
+        }}
+        
+        .article-content th,
+        .article-content td {{
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+        }}
+        
+        .article-content th {{
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--primary);
+        }}
+        
+        .article-content tr:nth-child(even) {{
+            background: rgba(255, 255, 255, 0.02);
+        }}
+        
+        .article-content hr {{
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: var(--spacing-xl) 0;
+        }}
+        
+        /* Tags */
+        .article-tags {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }}
+        
+        .article-tag {{
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }}
+        
+        .article-tag:hover {{
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--primary);
+        }}
+        
+        /* Share Buttons */
+        .article-share {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }}
+        
+        .article-share span {{
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }}
+        
+        .share-btn {{
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }}
+        
+        .share-btn:hover {{
+            border-color: var(--primary);
+            color: var(--primary);
+        }}
+        
+        /* Back Link */
+        .back-link {{
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-display);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }}
+        
+        .back-link:hover {{
+            color: var(--primary);
+        }}
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="../tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Article Hero -->
+    <header class="article-hero">
+        <div class="article-hero-content">
+            <nav class="article-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <a href="../blog.html">Blog</a>
+                <span>/</span>
+                <span>{title}</span>
+            </nav>
+            
+            <div id="article-header">
+                <span class="article-category-tag">{category}</span>
+                <h1>{title}</h1>
+                <div class="article-meta-info">
+                    <span><i class="fas fa-calendar"></i> {date_formatted}</span>
+                    <span><i class="fas fa-clock"></i> {article['readTime']}</span>
+                    <span><i class="fas fa-user"></i> {author}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <article class="article-container">
+        <a href="../blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Torna al Blog
+        </a>
+        
+        <div id="article-content" class="article-content">
+            <!-- Contenuto caricato da JavaScript -->
+        </div>
+        
+        <!-- Tags -->
+        <div id="article-tags" class="article-tags">
+            {' '.join([f'<a href="../blog.html?search={tag}" class="article-tag">#{tag}</a>' for tag in article['tags']])}
+        </div>
+        
+        <!-- Share -->
+        <div class="article-share">
+            <span>Condividi:</span>
+            <button class="share-btn" title="Condividi su Twitter" onclick="shareOnTwitter()">
+                <i class="fab fa-twitter"></i>
+            </button>
+            <button class="share-btn" title="Condividi su LinkedIn" onclick="shareOnLinkedIn()">
+                <i class="fab fa-linkedin-in"></i>
+            </button>
+            <button class="share-btn" title="Copia link" onclick="copyLink()">
+                <i class="fas fa-link"></i>
+            </button>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="../index.html">Home</a>
+                        <a href="../blog.html">Blog</a>
+                        <a href="../tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Contenuto Markdown dell'articolo
+        const articleContent = {json.dumps(article['content'], ensure_ascii=False)};
+        
+        // Configura marked
+        marked.setOptions({{
+            highlight: function(code, lang) {{
+                if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {{
+                    return hljs.highlight(code, {{ language: lang }}).value;
+                }}
+                return code;
+            }},
+            breaks: true,
+            gfm: true
+        }});
+        
+        // Renderizza il contenuto
+        document.getElementById('article-content').innerHTML = marked.parse(articleContent);
+        
+        // Applica syntax highlighting
+        document.querySelectorAll('pre code').forEach(block => {{
+            hljs.highlightElement(block);
+        }});
+        
+        // Funzioni di condivisione
+        function shareOnTwitter() {{
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.title);
+            window.open(`https://twitter.com/intent/tweet?url=${{url}}&text=${{text}}`, '_blank');
+        }}
+        
+        function shareOnLinkedIn() {{
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${{url}}`, '_blank');
+        }}
+        
+        function copyLink() {{
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {{
+                    if (typeof showToast === 'function') {{
+                        showToast('Link copiato negli appunti!');
+                    }} else {{
+                        alert('Link copiato!');
+                    }}
+                }})
+                .catch(() => alert('Errore durante la copia'));
+        }}
+    </script>
+</body>
+</html>'''
+    
+    return html
 
 
 def main():
@@ -162,6 +715,13 @@ def main():
             articles.append(article)
             categories.add(article['category'])
             print(f"    ✅ {article['title']}")
+            
+            # Genera pagina HTML statica
+            html_content = generate_article_html(article)
+            html_path = ARTICLES_DIR / f"{article['id']}.html"
+            html_path.write_text(html_content, encoding='utf-8')
+            print(f"    📄 Generato {html_path}")
+            
         elif article and article['draft']:
             print(f"    ⏸️  Draft, ignorato")
     
