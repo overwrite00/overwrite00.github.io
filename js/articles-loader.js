@@ -508,8 +508,11 @@ function generateArticleCard(article) {
         ? `<img src="${article.image}" alt="${article.title}" class="article-card-image">`
         : `<div class="article-card-icon"><i class="fas fa-newspaper"></i></div>`;
     
+    // Link alla pagina HTML statica
+    const articleUrl = `articles/${article.id}.html`;
+    
     return `
-        <article class="article-card" onclick="window.location.href='article.html?id=${article.id}'">
+        <article class="article-card" onclick="window.location.href='${articleUrl}'">
             ${imageHtml}
             <div class="article-card-content">
                 <span class="article-category">${article.category}</span>
