@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - 'articles/**'
+      - 'articles/*.md'
+      - 'articles/**/*.md'
     branches:
       - main
   # Permetti esecuzione manuale
