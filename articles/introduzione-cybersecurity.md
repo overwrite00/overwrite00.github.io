@@ -14,7 +14,7 @@ draft: false
 
 # Introduzione alla Cybersecurity
 
-![Introduzione alla CyberSecurity](assets/images/introcybersec.png)
+![Introduzione alla CyberSecurity](/assets/images/introcybersec.png)
 
 La **cybersecurity** (o sicurezza informatica) è l'insieme delle pratiche, tecnologie e processi progettati per proteggere sistemi, reti e dati da attacchi digitali.
 
