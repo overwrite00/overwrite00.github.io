@@ -1,0 +1,39 @@
+name: Build Articles Index
+
+# Esegui quando vengono pushati file nella cartella articles/
+on:
+  push:
+    paths:
+      - 'articles/**'
+    branches:
+      - main
+  # Permetti esecuzione manuale
+  workflow_dispatch:
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Generate articles.json
+        run: |
+          python scripts/generate-articles-index.py
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/articles.json -f
+          git diff --staged --quiet || git commit -m "🤖 Auto-update articles.json [$(date +'%Y-%m-%d %H:%M')]"
+          git push
