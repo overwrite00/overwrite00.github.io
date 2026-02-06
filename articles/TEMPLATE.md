@@ -72,4 +72,4 @@ Riepilogo finale dell'articolo con le conclusioni principali e possibili prossim
 
 ---
 
-*Se hai trovato utile questo articolo, condividilo!*
+*Se hai domande su questo o altri argomenti, entra nella nostra community Discord: https://discord.gg/PE2q2jnNN6!*
