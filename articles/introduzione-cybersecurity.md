@@ -89,4 +89,4 @@ Nei prossimi articoli approfondiremo ciascuno di questi argomenti con guide prat
 
 ---
 
-*Hai domande? Lascia un commento o contattami su GitHub!*
+*Se hai domande su questo o altri argomenti, entra nella nostra community Discord https://discord.gg/PE2q2jnNN6!*
