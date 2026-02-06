@@ -4,7 +4,7 @@ description: "Una guida introduttiva ai concetti base della sicurezza informatic
 category: "Fundamentals"
 date: "2026-02-06"
 author: "CybersecurityZen"
-image: ""
+image: "assets/images/introcybersec.png"
 tags:
   - cybersecurity
   - fundamentals
@@ -13,6 +13,8 @@ draft: false
 ---
 
 # Introduzione alla Cybersecurity
+
+![Introduzione alla CyberSecurity](assets/images/introcybersec.png)
 
 La **cybersecurity** (o sicurezza informatica) è l'insieme delle pratiche, tecnologie e processi progettati per proteggere sistemi, reti e dati da attacchi digitali.
 
