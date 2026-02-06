@@ -1,8 +1,7 @@
 {
-  "lastUpdated": "2026-02-06T21:12:21.301016",
+  "lastUpdated": "2026-02-06T21:14:21.289733",
   "totalArticles": 2,
   "categories": [
-    "Foundamentals",
     "Fundamentals"
   ],
   "articles": [
@@ -10,14 +9,14 @@
       "id": "tipi-di-malware",
       "title": "Guida ai Malware: Tipologie, Funzionamento e Segnali d'Infezione",
       "description": "Scopri le diverse tipologie di malware, dai virus ai ransomware, e impara a riconoscere i sintomi di un sistema compromesso.",
-      "category": "Foundamentals",
+      "category": "Fundamentals",
       "date": "2026-02-06",
       "readTime": "2 min",
       "author": "CybersecurityZen",
       "image": "https://55e91930.delivery.rocketcdn.me/wp-content/uploads/2024/12/tipi-malware.png",
       "tags": [
         "cybersecurity",
-        "foundamentals",
+        "fundamentals",
         "beginners",
         "malware"
       ],
