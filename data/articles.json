@@ -1,0 +1,20 @@
+{
+  "lastUpdated": "2026-02-06T12:00:00",
+  "totalArticles": 1,
+  "categories": ["Fundamentals"],
+  "articles": [
+    {
+      "id": "introduzione-cybersecurity",
+      "title": "Introduzione alla Cybersecurity: Concetti Fondamentali",
+      "description": "Una guida introduttiva ai concetti base della sicurezza informatica per chi inizia",
+      "category": "Fundamentals",
+      "date": "2026-02-06",
+      "readTime": "5 min",
+      "author": "CybersecurityZen",
+      "image": "",
+      "tags": ["cybersecurity", "fundamentals", "beginner"],
+      "url": "articles/introduzione-cybersecurity.md",
+      "draft": false
+    }
+  ]
+}

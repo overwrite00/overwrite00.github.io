@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Articoli per categoria - CybersecurityZen">
+    
+    <title>Categorie | CybersecurityZen</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .category-hero {
+            padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
+        }
+        
+        .category-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .category-hero .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .category-hero .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .category-hero .breadcrumb a:hover {
+            color: var(--primary);
+        }
+        
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        .category-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .category-large-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition-normal);
+        }
+        
+        .category-large-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.1);
+        }
+        
+        .category-large-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .category-large-card span {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-display);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="blog.html" class="nav-link"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Category Hero -->
+    <header class="category-hero">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / <a href="blog.html">Blog</a> / <span>Categoria</span>
+        </div>
+        <h1 id="category-title">Categorie</h1>
+    </header>
+
+    <!-- Category Content -->
+    <main class="category-container">
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Torna al Blog
+        </a>
+        
+        <div id="category-articles-container" class="category-articles-grid">
+            <!-- Articoli caricati dinamicamente -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="index.html">Home</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/articles-loader.js"></script>
+</body>
+</html>
