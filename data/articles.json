@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-06T12:00:00",
+  "lastUpdated": "2026-02-06T18:00:00",
   "totalArticles": 1,
   "categories": ["Fundamentals"],
   "articles": [
@@ -13,8 +13,8 @@
       "author": "CybersecurityZen",
       "image": "",
       "tags": ["cybersecurity", "fundamentals", "beginner"],
-      "url": "articles/introduzione-cybersecurity.md",
-      "draft": false
+      "draft": false,
+      "content": "# Introduzione alla Cybersecurity\n\nLa **cybersecurity** (o sicurezza informatica) è l'insieme delle pratiche, tecnologie e processi progettati per proteggere sistemi, reti e dati da attacchi digitali.\n\nIn questo articolo esploreremo i concetti fondamentali che ogni aspirante professionista della sicurezza dovrebbe conoscere.\n\n## La Triade CIA\n\nIl modello fondamentale della sicurezza informatica si basa su tre principi, noti come **CIA Triad**:\n\n### Confidentiality (Riservatezza)\n\nGarantisce che le informazioni siano accessibili solo a chi è autorizzato. Tecniche comuni:\n\n- Crittografia dei dati\n- Controllo degli accessi\n- Autenticazione a più fattori (MFA)\n\n### Integrity (Integrità)\n\nAssicura che i dati non vengano modificati in modo non autorizzato. Strumenti utilizzati:\n\n- Hash crittografici (SHA-256, MD5)\n- Firme digitali\n- Controlli di versione\n\n### Availability (Disponibilità)\n\nI sistemi e i dati devono essere accessibili quando necessario. Strategie:\n\n- Backup regolari\n- Sistemi ridondanti\n- Protezione da attacchi DDoS\n\n## Tipi di Minacce\n\n| Tipo | Descrizione | Esempio |\n|------|-------------|--------|\n| Malware | Software malevolo | Virus, Ransomware, Trojan |\n| Phishing | Inganno per rubare credenziali | Email false della banca |\n| DDoS | Sovraccarico di un servizio | Attacco a siti web |\n| SQL Injection | Attacco a database | Manipolazione query |\n\n## Strumenti Base\n\nEcco alcuni strumenti che ogni professionista dovrebbe conoscere:\n\n```bash\n# Nmap - Scanner di rete\nnmap -sV -sC target.com\n\n# Wireshark - Analisi pacchetti\nwireshark\n\n# Hashcat - Password cracking (per test autorizzati)\nhashcat -m 0 hash.txt wordlist.txt\n```\n\n> **⚠️ Importante:** Utilizza questi strumenti solo su sistemi di cui hai l'autorizzazione esplicita. L'uso non autorizzato è illegale.\n\n## Prossimi Passi\n\nPer approfondire la cybersecurity, ti consiglio di:\n\n1. Studiare le basi di networking (TCP/IP, DNS, HTTP)\n2. Imparare un linguaggio di scripting (Python, Bash)\n3. Praticare su piattaforme legali come HackTheBox o TryHackMe\n4. Ottenere certificazioni entry-level (CompTIA Security+, CEH)\n\n## Conclusioni\n\nLa cybersecurity è un campo in continua evoluzione che richiede apprendimento costante. Partire dai fondamentali è essenziale per costruire competenze solide.\n\nNei prossimi articoli approfondiremo ciascuno di questi argomenti con guide pratiche e hands-on.\n\n---\n\n*Hai domande? Lascia un commento o contattami su GitHub!*"
     }
   ]
 }

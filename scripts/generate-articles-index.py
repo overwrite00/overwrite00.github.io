@@ -2,6 +2,7 @@
 """
 Script per generare articles.json dai file Markdown nella cartella articles/
 Legge il frontmatter YAML di ogni file .md e crea un indice JSON.
+Include il contenuto completo dell'articolo nel JSON.
 
 Uso: python scripts/generate-articles-index.py
 """
@@ -116,7 +117,7 @@ def process_article(filepath: Path) -> dict | None:
     # Genera ID dal nome file
     article_id = filepath.stem  # nome-articolo da nome-articolo.md
     
-    # Costruisci oggetto articolo
+    # Costruisci oggetto articolo CON il contenuto
     article = {
         'id': article_id,
         'title': metadata.get('title', ''),
@@ -127,7 +128,7 @@ def process_article(filepath: Path) -> dict | None:
         'author': metadata.get('author', 'CybersecurityZen'),
         'image': metadata.get('image', ''),
         'tags': metadata.get('tags', []),
-        'url': f"articles/{article_id}.md",
+        'content': body,  # <-- Contenuto Markdown incluso nel JSON
         'draft': metadata.get('draft', 'false').lower() == 'true'
     }
     
@@ -146,6 +147,8 @@ def main():
         ARTICLES_DIR.mkdir(parents=True, exist_ok=True)
     
     md_files = list(ARTICLES_DIR.glob("*.md"))
+    # Escludi il template
+    md_files = [f for f in md_files if f.name != 'TEMPLATE.md']
     print(f"  📄 Trovati {len(md_files)} file Markdown")
     
     articles = []

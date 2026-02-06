@@ -158,6 +158,9 @@ function convertMarkdownToHTML(markdown) {
  */
 async function renderHomeArticles(containerId = 'articles-container', limit = 3) {
     const container = document.getElementById(containerId);
+    const emptyState = document.getElementById('articles-empty');
+    const footer = document.getElementById('articles-footer');
+    
     if (!container) return;
     
     // Mostra skeleton loading
@@ -166,15 +169,15 @@ async function renderHomeArticles(containerId = 'articles-container', limit = 3)
     const data = await loadArticlesData();
     
     if (data.articles.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-newspaper"></i>
-                <h3>Articoli in arrivo</h3>
-                <p>Sto preparando contenuti interessanti. Torna presto!</p>
-            </div>
-        `;
+        container.innerHTML = '';
+        if (emptyState) emptyState.style.display = 'block';
+        if (footer) footer.style.display = 'none';
         return;
     }
+    
+    // Nascondi empty state e mostra footer
+    if (emptyState) emptyState.style.display = 'none';
+    if (footer) footer.style.display = 'block';
     
     const articles = data.articles.slice(0, limit);
     container.innerHTML = articles.map(article => generateArticleCard(article)).join('');
@@ -419,9 +422,9 @@ async function renderSingleArticle() {
     }
     
     const data = await loadArticlesData();
-    const articleMeta = data.articles.find(a => a.id === articleId);
+    const article = data.articles.find(a => a.id === articleId);
     
-    if (!articleMeta) {
+    if (!article) {
         document.getElementById('article-content').innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -432,14 +435,13 @@ async function renderSingleArticle() {
         return;
     }
     
-    // Carica Markdown
-    const articleData = await loadMarkdownArticle(articleMeta.url);
-    
-    if (!articleData) {
+    // Il contenuto è già nel JSON, non serve caricare il file .md
+    if (!article.content) {
         document.getElementById('article-content').innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
-                <h3>Errore caricamento articolo</h3>
+                <h3>Contenuto non disponibile</h3>
+                <p>L'articolo esiste ma il contenuto non è stato caricato.</p>
                 <a href="blog.html" class="btn btn-primary">Torna al Blog</a>
             </div>
         `;
@@ -447,32 +449,32 @@ async function renderSingleArticle() {
     }
     
     // Aggiorna meta pagina
-    document.title = `${articleMeta.title} | CybersecurityZen`;
+    document.title = `${article.title} | CybersecurityZen`;
     
     // Renderizza header
     const headerEl = document.getElementById('article-header');
     if (headerEl) {
         headerEl.innerHTML = `
-            <span class="article-category-tag">${articleMeta.category}</span>
-            <h1>${articleMeta.title}</h1>
+            <span class="article-category-tag">${article.category}</span>
+            <h1>${article.title}</h1>
             <div class="article-meta-info">
-                <span><i class="fas fa-calendar"></i> ${formatDate(articleMeta.date)}</span>
-                <span><i class="fas fa-clock"></i> ${articleMeta.readTime}</span>
-                <span><i class="fas fa-user"></i> ${articleMeta.author}</span>
+                <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                <span><i class="fas fa-clock"></i> ${article.readTime}</span>
+                <span><i class="fas fa-user"></i> ${article.author}</span>
             </div>
         `;
     }
     
-    // Renderizza contenuto
+    // Renderizza contenuto (converti Markdown in HTML)
     const contentEl = document.getElementById('article-content');
     if (contentEl) {
-        contentEl.innerHTML = convertMarkdownToHTML(articleData.body);
+        contentEl.innerHTML = convertMarkdownToHTML(article.content);
     }
     
     // Renderizza tags
     const tagsEl = document.getElementById('article-tags');
-    if (tagsEl && articleMeta.tags.length > 0) {
-        tagsEl.innerHTML = articleMeta.tags.map(tag => 
+    if (tagsEl && article.tags && article.tags.length > 0) {
+        tagsEl.innerHTML = article.tags.map(tag => 
             `<a href="blog.html?search=${encodeURIComponent(tag)}" class="article-tag">#${tag}</a>`
         ).join('');
     }
