@@ -110,6 +110,89 @@ def is_draft(value) -> bool:
     return False
 
 
+def find_related_articles(current_article: dict, all_articles: list[dict], max_results: int = 3) -> list[dict]:
+    """Trova articoli correlati basandosi su tag condivisi e categoria."""
+    current_tags = set(tag.lower() for tag in current_article.get('tags', []))
+    current_category = current_article.get('category', '')
+    current_id = current_article.get('id', '')
+
+    scored = []
+    for article in all_articles:
+        if article['id'] == current_id or article.get('draft', False):
+            continue
+
+        candidate_tags = set(tag.lower() for tag in article.get('tags', []))
+        shared_tags = current_tags & candidate_tags
+
+        score = len(shared_tags) * 2
+        if article.get('category', '') == current_category:
+            score += 5
+
+        if score > 0:
+            scored.append((score, article['date'], article))
+
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [item[2] for item in scored[:max_results]]
+
+
+def generate_related_articles_html(related: list[dict]) -> str:
+    """Genera l'HTML della sezione 'Articoli Correlati'."""
+    if not related:
+        return ''
+
+    cards_html = ''
+    for article in related:
+        title = html_escape(article['title'], quote=True)
+        desc = article.get('description', '')
+        if len(desc) > 120:
+            desc = desc[:120] + '...'
+        desc = html_escape(desc, quote=True)
+        category = html_escape(article['category'], quote=True)
+        article_url = f"{article['id']}.html"
+        read_time = article.get('readTime', '')
+
+        image = article.get('image', '')
+        has_image = image and isinstance(image, str) and image.strip()
+        if has_image:
+            # Le immagini relative sono rispetto alla root del sito,
+            # ma le pagine articolo sono in /articles/, serve ../
+            img_src = image if image.startswith(('http://', 'https://')) else f"../{image}"
+            image_html = f'<img src="{html_escape(img_src, quote=True)}" alt="{title}" class="related-card-image">'
+        else:
+            image_html = '<div class="related-card-icon"><i class="fas fa-newspaper"></i></div>'
+
+        try:
+            date_obj = datetime.strptime(article['date'], '%Y-%m-%d')
+            date_fmt = date_obj.strftime('%d %B %Y')
+        except ValueError:
+            date_fmt = article['date']
+
+        cards_html += f'''
+            <a href="{article_url}" class="related-card">
+                {image_html}
+                <div class="related-card-content">
+                    <span class="related-card-category">{category}</span>
+                    <h4 class="related-card-title">{title}</h4>
+                    <p class="related-card-excerpt">{desc}</p>
+                    <div class="related-card-meta">
+                        <span><i class="fas fa-calendar"></i> {date_fmt}</span>
+                        <span><i class="fas fa-clock"></i> {read_time}</span>
+                    </div>
+                </div>
+            </a>'''
+
+    return f'''
+        <!-- Articoli Correlati -->
+        <div class="related-articles">
+            <h3 class="related-articles-title">
+                <i class="fas fa-link"></i> Articoli Correlati
+            </h3>
+            <div class="related-articles-grid">
+                {cards_html}
+            </div>
+        </div>'''
+
+
 def process_article(filepath: Path) -> dict | None:
     """Processa un singolo file Markdown e ritorna i metadati."""
     try:
@@ -151,7 +234,7 @@ def process_article(filepath: Path) -> dict | None:
     return article
 
 
-def generate_article_html(article: dict) -> str:
+def generate_article_html(article: dict, all_articles: list[dict] = None) -> str:
     """Genera la pagina HTML statica per un articolo con meta tag SEO."""
 
     # Escape HTML per i meta tag (previene rottura attributi con caratteri speciali)
@@ -176,6 +259,12 @@ def generate_article_html(article: dict) -> str:
         date_formatted = date_obj.strftime('%d %B %Y')
     except ValueError:
         date_formatted = date
+
+    # Calcola articoli correlati
+    related = []
+    if all_articles:
+        related = find_related_articles(article, all_articles, max_results=3)
+    related_html = generate_related_articles_html(related)
 
     # Escape contenuto markdown per embedding sicuro in <script>
     content_json = json.dumps(article['content'], ensure_ascii=False)
@@ -533,6 +622,138 @@ def generate_article_html(article: dict) -> str:
         .back-link:hover {{
             color: var(--primary);
         }}
+
+        /* Related Articles */
+        .related-articles {{
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+        }}
+
+        .related-articles-title {{
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }}
+
+        .related-articles-title i {{
+            color: var(--primary);
+            font-size: 1rem;
+        }}
+
+        .related-articles-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: var(--spacing-md);
+        }}
+
+        .related-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            text-decoration: none;
+            transition: var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+        }}
+
+        .related-card:hover {{
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
+        }}
+
+        .related-card-image {{
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: var(--bg-tertiary);
+        }}
+
+        .related-card-icon {{
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-card) 100%);
+        }}
+
+        .related-card-icon i {{
+            font-size: 2.5rem;
+            color: var(--primary);
+            opacity: 0.4;
+        }}
+
+        .related-card-content {{
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }}
+
+        .related-card-category {{
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: var(--spacing-xs);
+        }}
+
+        .related-card-title {{
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }}
+
+        .related-card:hover .related-card-title {{
+            color: var(--primary);
+        }}
+
+        .related-card-excerpt {{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: var(--spacing-sm);
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }}
+
+        .related-card-meta {{
+            display: flex;
+            gap: var(--spacing-md);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }}
+
+        .related-card-meta i {{
+            margin-right: 3px;
+            color: var(--primary);
+        }}
+
+        @media (max-width: 768px) {{
+            .related-articles-grid {{
+                grid-template-columns: 1fr;
+            }}
+        }}
     </style>
 </head>
 <body>
@@ -617,6 +838,8 @@ def generate_article_html(article: dict) -> str:
                 <i class="fas fa-link"></i>
             </button>
         </div>
+
+        {related_html}
     </article>
 
     <!-- Footer -->
@@ -751,6 +974,7 @@ def main():
     categories = set()
     stats = {'generated': 0, 'skipped': 0, 'drafts': 0, 'errors': 0}
 
+    # Pass 1: Processa tutti gli articoli
     for filepath in md_files:
         print(f"  → Processando: {filepath.name}")
         article = process_article(filepath)
@@ -767,8 +991,12 @@ def main():
         articles.append(article)
         categories.add(article['category'])
 
-        # Genera pagina HTML statica (solo se cambiata)
-        html_content = generate_article_html(article)
+    # Ordina per data (più recenti prima)
+    articles.sort(key=lambda x: x['date'], reverse=True)
+
+    # Pass 2: Genera pagine HTML con articoli correlati
+    for article in articles:
+        html_content = generate_article_html(article, articles)
         html_path = ARTICLES_DIR / f"{article['id']}.html"
 
         if write_if_changed(html_path, html_content):
@@ -777,9 +1005,6 @@ def main():
         else:
             stats['skipped'] += 1
             print(f"    ⏩ Invariato, skip {html_path}")
-
-    # Ordina per data (più recenti prima)
-    articles.sort(key=lambda x: x['date'], reverse=True)
 
     # Costruisci output JSON
     output = {
