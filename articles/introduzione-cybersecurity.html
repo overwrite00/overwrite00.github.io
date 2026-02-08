@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <title>Introduzione alla Cybersecurity: Concetti Fondamentali | CybersecurityZen</title>
     <meta name="description" content="Una guida introduttiva ai concetti base della sicurezza informatica per chi inizia">
@@ -11,7 +11,7 @@
     <meta name="author" content="CybersecurityZen">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://overwrite00.github.io/articles/introduzione-cybersecurity.html">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://overwrite00.github.io/articles/introduzione-cybersecurity.html">
@@ -22,43 +22,43 @@
     <meta property="article:published_time" content="2026-02-06">
     <meta property="article:author" content="CybersecurityZen">
     <meta property="article:section" content="Fundamentals">
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://overwrite00.github.io/articles/introduzione-cybersecurity.html">
     <meta name="twitter:title" content="Introduzione alla Cybersecurity: Concetti Fondamentali">
     <meta name="twitter:description" content="Una guida introduttiva ai concetti base della sicurezza informatica per chi inizia">
     <meta name="twitter:image" content="assets/images/introcybersec.png">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Highlight.js per syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="../css/style.css">
-    
+
     <style>
         /* Article Page Styles */
         .article-hero {
             padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
             background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
         }
-        
+
         .article-hero-content {
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .article-breadcrumb {
             display: flex;
             align-items: center;
@@ -67,17 +67,17 @@
             font-family: var(--font-mono);
             font-size: 0.8rem;
         }
-        
+
         .article-breadcrumb a {
             color: var(--text-muted);
             text-decoration: none;
             transition: var(--transition-fast);
         }
-        
+
         .article-breadcrumb a:hover {
             color: var(--primary);
         }
-        
+
         .article-category-tag {
             display: inline-block;
             font-family: var(--font-mono);
@@ -89,7 +89,7 @@
             border: 1px solid var(--border-glow);
             margin-bottom: var(--spacing-md);
         }
-        
+
         .article-hero h1 {
             font-family: var(--font-display);
             font-size: clamp(1.75rem, 4vw, 2.75rem);
@@ -97,7 +97,7 @@
             line-height: 1.3;
             margin-bottom: var(--spacing-lg);
         }
-        
+
         .article-meta-info {
             display: flex;
             align-items: center;
@@ -107,29 +107,29 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
+
         .article-meta-info i {
             color: var(--primary);
             margin-right: var(--spacing-xs);
         }
-        
+
         /* Article Content */
         .article-container {
             max-width: 800px;
             margin: 0 auto;
             padding: var(--spacing-xl) var(--spacing-lg);
         }
-        
+
         .article-content {
             font-size: 1.05rem;
             line-height: 1.8;
             color: var(--text-primary);
         }
-        
+
         .article-content h1 {
             display: none;
         }
-        
+
         .article-content h2 {
             font-family: var(--font-display);
             font-size: 1.75rem;
@@ -140,7 +140,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }
-        
+
         .article-content h3 {
             font-family: var(--font-display);
             font-size: 1.35rem;
@@ -149,7 +149,7 @@
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
-        
+
         .article-content h4 {
             font-family: var(--font-display);
             font-size: 1.15rem;
@@ -158,41 +158,41 @@
             margin-bottom: var(--spacing-sm);
             color: var(--text-secondary);
         }
-        
+
         .article-content p {
             margin-bottom: var(--spacing-md);
         }
-        
+
         .article-content a {
             color: var(--primary);
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: var(--transition-fast);
         }
-        
+
         .article-content a:hover {
             border-bottom-color: var(--primary);
         }
-        
+
         .article-content ul,
         .article-content ol {
             margin-bottom: var(--spacing-md);
             padding-left: var(--spacing-lg);
         }
-        
+
         .article-content li {
             margin-bottom: var(--spacing-sm);
         }
-        
+
         .article-content strong {
             color: var(--text-primary);
             font-weight: 600;
         }
-        
+
         .article-content em {
             font-style: italic;
         }
-        
+
         .article-content code {
             font-family: var(--font-mono);
             font-size: 0.9em;
@@ -201,7 +201,7 @@
             border-radius: 4px;
             color: var(--primary);
         }
-        
+
         .article-content pre {
             background: #1e1e2e;
             border: 1px solid var(--border-color);
@@ -210,7 +210,7 @@
             overflow-x: auto;
             margin: var(--spacing-md) 0;
         }
-        
+
         .article-content pre code {
             background: none;
             padding: 0;
@@ -218,7 +218,7 @@
             font-size: 0.9rem;
             line-height: 1.6;
         }
-        
+
         .article-content blockquote {
             border-left: 3px solid var(--primary);
             padding-left: var(--spacing-md);
@@ -229,7 +229,7 @@
             padding: var(--spacing-md);
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         }
-        
+
         .article-content img {
             max-width: 100%;
             height: auto;
@@ -237,37 +237,37 @@
             margin: var(--spacing-md) 0;
             border: 1px solid var(--border-color);
         }
-        
+
         .article-content table {
             width: 100%;
             border-collapse: collapse;
             margin: var(--spacing-md) 0;
             font-size: 0.95rem;
         }
-        
+
         .article-content th,
         .article-content td {
             border: 1px solid var(--border-color);
             padding: var(--spacing-sm) var(--spacing-md);
             text-align: left;
         }
-        
+
         .article-content th {
             background: var(--bg-tertiary);
             font-weight: 600;
             color: var(--primary);
         }
-        
+
         .article-content tr:nth-child(even) {
             background: rgba(255, 255, 255, 0.02);
         }
-        
+
         .article-content hr {
             border: none;
             border-top: 1px solid var(--border-color);
             margin: var(--spacing-xl) 0;
         }
-        
+
         /* Tags */
         .article-tags {
             display: flex;
@@ -277,7 +277,7 @@
             padding-top: var(--spacing-lg);
             border-top: 1px solid var(--border-color);
         }
-        
+
         .article-tag {
             font-family: var(--font-mono);
             font-size: 0.75rem;
@@ -288,12 +288,12 @@
             text-decoration: none;
             transition: var(--transition-fast);
         }
-        
+
         .article-tag:hover {
             background: rgba(0, 240, 255, 0.1);
             color: var(--primary);
         }
-        
+
         /* Share Buttons */
         .article-share {
             display: flex;
@@ -301,13 +301,13 @@
             gap: var(--spacing-md);
             margin-top: var(--spacing-lg);
         }
-        
+
         .article-share span {
             font-family: var(--font-display);
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
+
         .share-btn {
             width: 40px;
             height: 40px;
@@ -322,12 +322,12 @@
             transition: var(--transition-fast);
             cursor: pointer;
         }
-        
+
         .share-btn:hover {
             border-color: var(--primary);
             color: var(--primary);
         }
-        
+
         /* Back Link */
         .back-link {
             display: inline-flex;
@@ -339,7 +339,7 @@
             margin-bottom: var(--spacing-lg);
             transition: var(--transition-fast);
         }
-        
+
         .back-link:hover {
             color: var(--primary);
         }
@@ -360,13 +360,13 @@
                 <span class="logo-bracket">]</span>
                 <span class="logo-cursor">_</span>
             </a>
-            
+
             <button class="nav-toggle" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            
+
             <ul class="nav-menu">
                 <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
                 <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
@@ -386,7 +386,7 @@
                 <span>/</span>
                 <span>Introduzione alla Cybersecurity: Concetti Fondamentali</span>
             </nav>
-            
+
             <div id="article-header">
                 <span class="article-category-tag">Fundamentals</span>
                 <h1>Introduzione alla Cybersecurity: Concetti Fondamentali</h1>
@@ -404,16 +404,16 @@
         <a href="../blog.html" class="back-link">
             <i class="fas fa-arrow-left"></i> Torna al Blog
         </a>
-        
+
         <div id="article-content" class="article-content">
             <!-- Contenuto caricato da JavaScript -->
         </div>
-        
+
         <!-- Tags -->
         <div id="article-tags" class="article-tags">
             <a href="../blog.html?search=cybersecurity" class="article-tag">#cybersecurity</a> <a href="../blog.html?search=fundamentals" class="article-tag">#fundamentals</a> <a href="../blog.html?search=beginner" class="article-tag">#beginner</a>
         </div>
-        
+
         <!-- Share -->
         <div class="article-share">
             <span>Condividi:</span>
@@ -437,7 +437,7 @@
                     <span class="footer-logo">[CybersecurityZen]</span>
                     <p>Security Research • Tools • Knowledge</p>
                 </div>
-                
+
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Navigazione</h4>
@@ -451,7 +451,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
             </div>
@@ -475,8 +475,8 @@
     <script src="../js/main.js"></script>
     <script>
         // Contenuto Markdown dell'articolo
-        const articleContent = "# Introduzione alla Cybersecurity\n\n![Introduzione alla CyberSecurity](/assets/images/introcybersec.png)\n\nLa **cybersecurity** (o sicurezza informatica) è l'insieme delle pratiche, tecnologie e processi progettati per proteggere sistemi, reti e dati da attacchi digitali.\n\nIn questo articolo esploreremo i concetti fondamentali che ogni aspirante professionista della sicurezza dovrebbe conoscere.\n\n## La Triade CIA\n\nIl modello fondamentale della sicurezza informatica si basa su tre principi, noti come **CIA Triad**:\n\n### Confidentiality (Riservatezza)\n\nGarantisce che le informazioni siano accessibili solo a chi è autorizzato. Tecniche comuni:\n\n- Crittografia dei dati\n- Controllo degli accessi\n- Autenticazione a più fattori (MFA)\n\n### Integrity (Integrità)\n\nAssicura che i dati non vengano modificati in modo non autorizzato. Strumenti utilizzati:\n\n- Hash crittografici (SHA-256, MD5)\n- Firme digitali\n- Controlli di versione\n\n### Availability (Disponibilità)\n\nI sistemi e i dati devono essere accessibili quando necessario. Strategie:\n\n- Backup regolari\n- Sistemi ridondanti\n- Protezione da attacchi DDoS\n\n## Tipi di Minacce\n\n| Tipo | Descrizione | Esempio |\n|------|-------------|---------|\n| Malware | Software malevolo | Virus, Ransomware, Trojan |\n| Phishing | Inganno per rubare credenziali | Email false della banca |\n| DDoS | Sovraccarico di un servizio | Attacco a siti web |\n| SQL Injection | Attacco a database | Manipolazione query |\n\n## Strumenti Base\n\nEcco alcuni strumenti che ogni professionista dovrebbe conoscere:\n\n```bash\n# Nmap - Scanner di rete\nnmap -sV -sC target.com\n\n# Wireshark - Analisi pacchetti\nwireshark\n\n# Hashcat - Password cracking (per test autorizzati)\nhashcat -m 0 hash.txt wordlist.txt\n```\n\n> **⚠️ Importante:** Utilizza questi strumenti solo su sistemi di cui hai l'autorizzazione esplicita. L'uso non autorizzato è illegale.\n\n## Prossimi Passi\n\nPer approfondire la cybersecurity, ti consiglio di:\n\n1. Studiare le basi di networking (TCP/IP, DNS, HTTP)\n2. Imparare un linguaggio di scripting (Python, Bash)\n3. Praticare su piattaforme legali come HackTheBox o TryHackMe\n4. Ottenere certificazioni entry-level (CompTIA Security+, CEH)\n\n## Conclusioni\n\nLa cybersecurity è un campo in continua evoluzione che richiede apprendimento costante. Partire dai fondamentali è essenziale per costruire competenze solide.\n\nNei prossimi articoli approfondiremo ciascuno di questi argomenti con guide pratiche e hands-on.\n\n---\n\n*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class=\"fab fa-discord\"></i><https://discord.gg/PE2q2jnNN6!>*";
-        
+        const articleContent = "# Introduzione alla Cybersecurity\n\n![Introduzione alla CyberSecurity](/assets/images/introcybersec.png)\n\nLa **cybersecurity** (o sicurezza informatica) è l'insieme delle pratiche, tecnologie e processi progettati per proteggere sistemi, reti e dati da attacchi digitali.\n\nIn questo articolo esploreremo i concetti fondamentali che ogni aspirante professionista della sicurezza dovrebbe conoscere.\n\n## La Triade CIA\n\nIl modello fondamentale della sicurezza informatica si basa su tre principi, noti come **CIA Triad**:\n\n### Confidentiality (Riservatezza)\n\nGarantisce che le informazioni siano accessibili solo a chi è autorizzato. Tecniche comuni:\n\n- Crittografia dei dati\n- Controllo degli accessi\n- Autenticazione a più fattori (MFA)\n\n### Integrity (Integrità)\n\nAssicura che i dati non vengano modificati in modo non autorizzato. Strumenti utilizzati:\n\n- Hash crittografici (SHA-256, MD5)\n- Firme digitali\n- Controlli di versione\n\n### Availability (Disponibilità)\n\nI sistemi e i dati devono essere accessibili quando necessario. Strategie:\n\n- Backup regolari\n- Sistemi ridondanti\n- Protezione da attacchi DDoS\n\n## Tipi di Minacce\n\n| Tipo | Descrizione | Esempio |\n|------|-------------|---------|\n| Malware | Software malevolo | Virus, Ransomware, Trojan |\n| Phishing | Inganno per rubare credenziali | Email false della banca |\n| DDoS | Sovraccarico di un servizio | Attacco a siti web |\n| SQL Injection | Attacco a database | Manipolazione query |\n\n## Strumenti Base\n\nEcco alcuni strumenti che ogni professionista dovrebbe conoscere:\n\n```bash\n# Nmap - Scanner di rete\nnmap -sV -sC target.com\n\n# Wireshark - Analisi pacchetti\nwireshark\n\n# Hashcat - Password cracking (per test autorizzati)\nhashcat -m 0 hash.txt wordlist.txt\n```\n\n> **⚠️ Importante:** Utilizza questi strumenti solo su sistemi di cui hai l'autorizzazione esplicita. L'uso non autorizzato è illegale.\n\n## Prossimi Passi\n\nPer approfondire la cybersecurity, ti consiglio di:\n\n1. Studiare le basi di networking (TCP/IP, DNS, HTTP)\n2. Imparare un linguaggio di scripting (Python, Bash)\n3. Praticare su piattaforme legali come HackTheBox o TryHackMe\n4. Ottenere certificazioni entry-level (CompTIA Security+, CEH)\n\n## Conclusioni\n\nLa cybersecurity è un campo in continua evoluzione che richiede apprendimento costante. Partire dai fondamentali è essenziale per costruire competenze solide.\n\nNei prossimi articoli approfondiremo ciascuno di questi argomenti con guide pratiche e hands-on.\n\n---\n\n*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class=\"fab fa-discord\"><\/i><https://discord.gg/PE2q2jnNN6!>*";
+
         // Configura marked
         marked.setOptions({
             highlight: function(code, lang) {
@@ -488,27 +488,27 @@
             breaks: true,
             gfm: true
         });
-        
+
         // Renderizza il contenuto
         document.getElementById('article-content').innerHTML = marked.parse(articleContent);
-        
+
         // Applica syntax highlighting
         document.querySelectorAll('pre code').forEach(block => {
             hljs.highlightElement(block);
         });
-        
+
         // Funzioni di condivisione
         function shareOnTwitter() {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(document.title);
             window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
         }
-        
+
         function shareOnLinkedIn() {
             const url = encodeURIComponent(window.location.href);
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
         }
-        
+
         function copyLink() {
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {
