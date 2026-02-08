@@ -91,4 +91,4 @@ Nei prossimi articoli approfondiremo ciascuno di questi argomenti con guide prat
 
 ---
 
-*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: https://discord.gg/PE2q2jnNN6!*
+*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class="fab fa-discord"></i><https://discord.gg/PE2q2jnNN6!>*
