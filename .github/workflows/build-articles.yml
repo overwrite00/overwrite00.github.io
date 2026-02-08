@@ -1,41 +1,57 @@
-name: Build Articles Index
+name: Build and Deploy
 
 on:
   push:
-    paths:
-      - 'articles/**'
     branches:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-index:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Generate articles.json and HTML pages
         run: python scripts/generate-articles-index.py
-      
-      - name: Commit and push
+
+      - name: Commit generated files
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add data/articles.json articles/*.html -f
           git diff --staged --quiet || (git commit -m "🤖 Auto-update articles [skip ci]" && git push)
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
