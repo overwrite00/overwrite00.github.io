@@ -20,6 +20,8 @@ draft: false
 
 ## Introduzione: L’arte dell’inganno digitale
 
+![Immagine di apertura](https://www.malwarebytes.com/wp-content/uploads/sites/2/2024/05/phishing.webp?w=1024)
+
 Un’analisi dettagliata sul phishing, l’arma preferita del social engineering. Dalle basi per principianti agli approfondimenti tecnici per esperti, esploriamo ogni variante — come Smishing, Vishing e Quishing — con esempi reali e strategie efficaci per non cadere mai più in trappola.
 
 ### 1. Cos'è veramente il phishing
