@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env
+
+# Node (se usato in futuro)
+node_modules/
+
+# Claude Code
+.claude/
