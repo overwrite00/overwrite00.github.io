@@ -203,10 +203,14 @@ async function renderHomeCategories(containerId = 'categories-container') {
         return;
     }
     
-    // Conta articoli per categoria
+    // Conta articoli per categoria (supporta categorie multiple)
     const categoryCounts = {};
     data.articles.forEach(article => {
-        categoryCounts[article.category] = (categoryCounts[article.category] || 0) + 1;
+        // Usa categories array se disponibile, altrimenti fallback a category singola
+        const cats = article.categories || [article.category];
+        cats.forEach(cat => {
+            categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        });
     });
     
     // Icone per categoria
@@ -217,6 +221,8 @@ async function renderHomeCategories(containerId = 'categories-container') {
         'CTF': 'fa-flag',
         'News': 'fa-newspaper',
         'Research': 'fa-microscope',
+        'Security Awareness': 'fa-shield-alt',
+        'Threat Analysis': 'fa-bug',
         'default': 'fa-folder'
     };
     
@@ -288,11 +294,14 @@ function renderCategoryFilters(categories) {
             filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Filtra
+            // Filtra (supporta categorie multiple)
             const category = btn.dataset.category;
             const filtered = category === 'all' 
                 ? window.allArticles 
-                : window.allArticles.filter(a => a.category === category);
+                : window.allArticles.filter(a => {
+                    const cats = a.categories || [a.category];
+                    return cats.includes(category);
+                });
             
             renderFilteredArticles(filtered, document.getElementById('blog-articles-container'));
         });
@@ -365,7 +374,11 @@ async function renderCategoryPage() {
     if (titleEl) titleEl.textContent = category;
     
     const data = await loadArticlesData();
-    const filtered = data.articles.filter(a => a.category === category);
+    // Filtra per categoria (supporta categorie multiple)
+    const filtered = data.articles.filter(a => {
+        const cats = a.categories || [a.category];
+        return cats.includes(category);
+    });
     
     if (filtered.length === 0) {
         container.innerHTML = `
@@ -388,9 +401,13 @@ async function renderCategoryPage() {
 async function renderAllCategories(container) {
     const data = await loadArticlesData();
     
+    // Conta articoli per categoria (supporta categorie multiple)
     const categoryCounts = {};
     data.articles.forEach(article => {
-        categoryCounts[article.category] = (categoryCounts[article.category] || 0) + 1;
+        const cats = article.categories || [article.category];
+        cats.forEach(cat => {
+            categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        });
     });
     
     container.innerHTML = `

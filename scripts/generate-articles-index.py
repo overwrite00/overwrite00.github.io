@@ -504,13 +504,77 @@ def generate_article_html(article: dict) -> str:
             color: var(--primary);
         }}
         
+        /* Code Block Terminal Style */
+        .code-block-wrapper {{
+            position: relative;
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }}
+        
+        .code-block-header {{
+            background: var(--bg-tertiary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }}
+        
+        .code-block-dots {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }}
+        
+        .code-block-dot {{
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }}
+        
+        .code-block-dot.red {{ background: #ff5f56; }}
+        .code-block-dot.yellow {{ background: #ffbd2e; }}
+        .code-block-dot.green {{ background: #27c93f; }}
+        
+        .code-block-lang {{
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: var(--spacing-md);
+        }}
+        
+        .code-block-copy {{
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }}
+        
+        .code-block-copy:hover {{
+            border-color: var(--primary);
+            color: var(--primary);
+        }}
+        
+        .code-block-copy.copied {{
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }}
+        
         .article-content pre {{
             background: #1e1e2e;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
+            margin: 0;
             padding: var(--spacing-md);
             overflow-x: auto;
-            margin: var(--spacing-md) 0;
         }}
         
         .article-content pre code {{
@@ -797,9 +861,69 @@ def generate_article_html(article: dict) -> str:
         // Renderizza il contenuto
         document.getElementById('article-content').innerHTML = marked.parse(articleContent);
         
+        // Wrappa i blocchi pre con lo stile terminal
+        document.querySelectorAll('.article-content pre').forEach((pre, index) => {{
+            // Trova il linguaggio dal tag code
+            const code = pre.querySelector('code');
+            let lang = '';
+            if (code && code.className) {{
+                const match = code.className.match(/language-(\w+)/);
+                lang = match ? match[1] : '';
+            }}
+            
+            // Crea il wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            
+            // Crea l'header
+            const header = document.createElement('div');
+            header.className = 'code-block-header';
+            header.innerHTML = `
+                <div class="code-block-dots">
+                    <span class="code-block-dot red"></span>
+                    <span class="code-block-dot yellow"></span>
+                    <span class="code-block-dot green"></span>
+                    <span class="code-block-lang">${{lang || 'code'}}</span>
+                </div>
+                <button class="code-block-copy" data-index="${{index}}">
+                    <i class="fas fa-copy"></i> Copia
+                </button>
+            `;
+            
+            // Inserisci il wrapper
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(header);
+            wrapper.appendChild(pre);
+        }});
+        
         // Applica syntax highlighting
         document.querySelectorAll('pre code').forEach(block => {{
             hljs.highlightElement(block);
+        }});
+        
+        // Funzione copia codice
+        document.querySelectorAll('.code-block-copy').forEach(btn => {{
+            btn.addEventListener('click', async function() {{
+                const wrapper = this.closest('.code-block-wrapper');
+                const code = wrapper.querySelector('code');
+                const text = code ? code.textContent : '';
+                
+                try {{
+                    await navigator.clipboard.writeText(text);
+                    this.innerHTML = '<i class="fas fa-check"></i> Copiato!';
+                    this.classList.add('copied');
+                    
+                    setTimeout(() => {{
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copia';
+                        this.classList.remove('copied');
+                    }}, 2000);
+                }} catch (err) {{
+                    this.innerHTML = '<i class="fas fa-times"></i> Errore';
+                    setTimeout(() => {{
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copia';
+                    }}, 2000);
+                }}
+            }});
         }});
         
         // Funzioni di condivisione
