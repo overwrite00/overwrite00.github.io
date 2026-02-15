@@ -528,11 +528,17 @@ function generateArticleCard(article) {
     // Link alla pagina HTML statica
     const articleUrl = `articles/${article.id}.html`;
     
+    // Genera HTML per tutte le categorie
+    const categories = article.categories || [article.category];
+    const categoriesHtml = categories.map(cat => 
+        `<span class="article-category">${cat}</span>`
+    ).join('');
+    
     return `
         <article class="article-card" onclick="window.location.href='${articleUrl}'">
             ${imageHtml}
             <div class="article-card-content">
-                <span class="article-category">${article.category}</span>
+                <div class="article-categories">${categoriesHtml}</div>
                 <h3 class="article-title">${article.title}</h3>
                 <p class="article-excerpt">${article.description}</p>
                 <div class="article-meta">

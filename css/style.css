@@ -787,13 +787,23 @@ body {
     flex-direction: column;
 }
 
+.article-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
 .article-category {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--primary);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: var(--spacing-sm);
+    letter-spacing: 0.5px;
+    background: rgba(0, 240, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-glow);
 }
 
 .article-title {
