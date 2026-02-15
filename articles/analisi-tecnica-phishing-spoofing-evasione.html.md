@@ -1,24 +1,32 @@
 ---
 title: "Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione"
 description: "Approfondimento tecnico sul phishing: analizziamo header email, spoofing, protocolli SPF/DKIM/DMARC e tecniche di evasione."
-category: "Security Awareness"
+categories: [
+    "Security Awareness",
+    "Threat Analysis"
+    ]
 date: "2026-02-08"
 author: "CybersecurityZen"
 image: "assets/images/phishing-analysis.png"
-tags:
-  - cybersecurity
-  - phishing
-  - infosec
-  - DMARC
-  - mfa
-  - difesa digitale
-  - spoofing
+tags: [
+  "email headers",
+  "phishing detection",
+  "SPF",
+  "DKIM",
+  "DMARC",
+  "email authentication",
+  "threat analysis",
+  "cybersecurity",
+  "phishing",
+  "security awareness",
+  "social engineering",
+  ]
 draft: false
 ---
 
 ## Analisi Tecnica del Phishing: Sotto il cofano dell’attacco
 
-![Immagine di apeertura](/assets/images/phishing-analysis.png)
+![Immagine di apertura](/assets/images/phishing-analysis.png)
 
 Dopo aver compreso la psicologia dietro l'inganno, è necessario analizzare l'infrastruttura tecnologica che permette al phishing di circolare e le contromisure necessarie per neutralizzarlo. La sicurezza informatica non è un prodotto statico, ma un processo stratificato che unisce consapevolezza e strumenti tecnici.
 
@@ -60,6 +68,7 @@ dig txt _dmarc.microsoft.com +short
 Gli attaccanti utilizzano strategie avanzate per nascondere la destinazione reale dei link e bypassare i sistemi di analisi automatizzata (Sandbox).
 
 ### 1. Attacchi Omografi (Punycode o Homograph Attack)
+
 Sfruttano la somiglianza visiva tra caratteri di alfabeti diversi. Ad esempio, la "o" latina in `google.com` può essere sostituita con una "о" cirillica. Il browser interpreterà il dominio come `xn--ggle-46da.com`, ma l'utente vedrà un URL apparentemente legittimo.
 
 Puoi utilizzare questo script Python per rilevare potenziali attacchi omografi e verificare la sicurezza del protocollo:
@@ -105,7 +114,9 @@ analyze_phishing_url("https://xn--pypal-4ve.com/login")
 L'email punta a un URL legittimo (spesso un sito WordPress bucato) che contiene uno script di reindirizzamento verso la landing page finale. Questo "spezza" l'analisi automatizzata dei filtri.
 
 ### 3. Cloaking e Anti-Sandbox
+
 I moderni kit di phishing includono script capaci di rilevare se il visitatore è un utente reale o un sistema di sicurezza:
+
 * **IP Blacklisting:** Se l'IP appartiene a società di cybersecurity (es. Cisco, FireEye, Google), il sito mostra una pagina innocua.
 * **Geofencing:** Il contenuto malevolo viene attivato solo se l'utente si connette da una specifica nazione.
 
