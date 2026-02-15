@@ -3,20 +3,44 @@
 Script per generare articles.json e pagine HTML statiche dai file Markdown.
 Include meta tag SEO e Open Graph per anteprime social corrette.
 
+Supporta:
+- draft: true/false - se true, l'articolo non viene pubblicato
+- featured: true/false - se true, l'articolo viene evidenziato
+- category: stringa singola o array di categorie
+- tags: array di hashtag
+
 Uso: python scripts/generate-articles-index.py
 """
 
+import os
 import json
 import re
 from datetime import datetime
-from html import escape as html_escape
 from pathlib import Path
-from urllib.parse import quote as url_quote
 
 # Configurazione
 ARTICLES_DIR = Path("articles")
 OUTPUT_FILE = Path("data/articles.json")
 SITE_URL = "https://overwrite00.github.io"
+
+
+def parse_yaml_value(value: str) -> any:
+    """Parse un valore YAML in Python type."""
+    value = value.strip()
+    
+    # Boolean
+    if value.lower() == 'true':
+        return True
+    if value.lower() == 'false':
+        return False
+    
+    # Array inline: [item1, item2]
+    if value.startswith('[') and value.endswith(']'):
+        items = value[1:-1].split(',')
+        return [item.strip().strip('"').strip("'") for item in items if item.strip()]
+    
+    # Stringa
+    return value.strip('"').strip("'")
 
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
@@ -26,54 +50,63 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     """
     frontmatter_pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)$'
     match = re.match(frontmatter_pattern, content, re.DOTALL)
-
+    
     if not match:
         return {}, content
-
+    
     yaml_content = match.group(1)
     body = match.group(2)
-
-    # Parse YAML semplice (senza dipendenza esterna per casi base)
+    
+    # Parse YAML
     metadata = {}
     current_key = None
     current_list = None
-
+    
     for line in yaml_content.split('\n'):
         line = line.rstrip()
         if not line or line.startswith('#'):
             continue
-
-        # Gestione liste YAML
+            
+        # Gestione liste YAML multilinea
         if line.startswith('  - ') and current_key:
             if current_list is None:
                 current_list = []
-            current_list.append(line[4:].strip().strip('"').strip("'"))
+            item = line[4:].strip().strip('"').strip("'")
+            current_list.append(item)
             metadata[current_key] = current_list
             continue
-
-        # Reset lista
+        
+        # Reset lista se non siamo in un item di lista
         if not line.startswith('  '):
             current_list = None
-
+        
         # Parse key: value
         if ':' in line:
             key, _, value = line.partition(':')
             key = key.strip()
-            value = value.strip().strip('"').strip("'")
-
+            value = value.strip()
+            
             if value == '' or value == '[]':
+                # Inizio di una lista multilinea o lista vuota
                 current_key = key
                 metadata[key] = []
-            elif value.startswith('[') and value.endswith(']'):
-                # Inline list: tags: [tag1, tag2]
-                items = value[1:-1].split(',')
-                metadata[key] = [item.strip().strip('"').strip("'") for item in items if item.strip()]
-                current_key = None
             else:
-                metadata[key] = value
+                # Valore inline (stringa, boolean, o array)
+                metadata[key] = parse_yaml_value(value)
                 current_key = key
-
+    
     return metadata, body
+
+
+def ensure_list(value) -> list:
+    """Converte un valore in lista se non lo è già."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    if isinstance(value, str):
+        return [value] if value else []
+    return []
 
 
 def estimate_read_time(content: str) -> str:
@@ -94,103 +127,11 @@ def extract_description(body: str, max_length: int = 160) -> str:
     clean = re.sub(r'\*([^*]+)\*', r'\1', clean)
     clean = re.sub(r'\n+', ' ', clean)
     clean = clean.strip()
-
+    
     if len(clean) > max_length:
         clean = clean[:max_length-3] + '...'
-
+    
     return clean
-
-
-def is_draft(value) -> bool:
-    """Verifica se il valore del campo draft indica un articolo bozza."""
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, str):
-        return value.lower() == 'true'
-    return False
-
-
-def find_related_articles(current_article: dict, all_articles: list[dict], max_results: int = 3) -> list[dict]:
-    """Trova articoli correlati basandosi su tag condivisi e categoria."""
-    current_tags = set(tag.lower() for tag in current_article.get('tags', []))
-    current_category = current_article.get('category', '')
-    current_id = current_article.get('id', '')
-
-    scored = []
-    for article in all_articles:
-        if article['id'] == current_id or article.get('draft', False):
-            continue
-
-        candidate_tags = set(tag.lower() for tag in article.get('tags', []))
-        shared_tags = current_tags & candidate_tags
-
-        score = len(shared_tags) * 2
-        if article.get('category', '') == current_category:
-            score += 5
-
-        if score > 0:
-            scored.append((score, article['date'], article))
-
-    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
-    return [item[2] for item in scored[:max_results]]
-
-
-def generate_related_articles_html(related: list[dict]) -> str:
-    """Genera l'HTML della sezione 'Articoli Correlati'."""
-    if not related:
-        return ''
-
-    cards_html = ''
-    for article in related:
-        title = html_escape(article['title'], quote=True)
-        desc = article.get('description', '')
-        if len(desc) > 120:
-            desc = desc[:120] + '...'
-        desc = html_escape(desc, quote=True)
-        category = html_escape(article['category'], quote=True)
-        article_url = f"{article['id']}.html"
-        read_time = article.get('readTime', '')
-
-        image = article.get('image', '')
-        has_image = image and isinstance(image, str) and image.strip()
-        if has_image:
-            # Le immagini relative sono rispetto alla root del sito,
-            # ma le pagine articolo sono in /articles/, serve ../
-            img_src = image if image.startswith(('http://', 'https://')) else f"../{image}"
-            image_html = f'<img src="{html_escape(img_src, quote=True)}" alt="{title}" class="related-card-image">'
-        else:
-            image_html = '<div class="related-card-icon"><i class="fas fa-newspaper"></i></div>'
-
-        try:
-            date_obj = datetime.strptime(article['date'], '%Y-%m-%d')
-            date_fmt = date_obj.strftime('%d %B %Y')
-        except ValueError:
-            date_fmt = article['date']
-
-        cards_html += f'''
-            <a href="{article_url}" class="related-card">
-                {image_html}
-                <div class="related-card-content">
-                    <span class="related-card-category">{category}</span>
-                    <h4 class="related-card-title">{title}</h4>
-                    <p class="related-card-excerpt">{desc}</p>
-                    <div class="related-card-meta">
-                        <span><i class="fas fa-calendar"></i> {date_fmt}</span>
-                        <span><i class="fas fa-clock"></i> {read_time}</span>
-                    </div>
-                </div>
-            </a>'''
-
-    return f'''
-        <!-- Articoli Correlati -->
-        <div class="related-articles">
-            <h3 class="related-articles-title">
-                <i class="fas fa-link"></i> Articoli Correlati
-            </h3>
-            <div class="related-articles-grid">
-                {cards_html}
-            </div>
-        </div>'''
 
 
 def process_article(filepath: Path) -> dict | None:
@@ -200,97 +141,106 @@ def process_article(filepath: Path) -> dict | None:
     except Exception as e:
         print(f"  ⚠️  Errore lettura {filepath}: {e}")
         return None
-
+    
     metadata, body = parse_frontmatter(content)
-
+    
     # Campi obbligatori
     if 'title' not in metadata:
         print(f"  ⚠️  {filepath.name}: manca 'title' nel frontmatter, skip")
         return None
-
+    
     # Genera ID dal nome file
     article_id = filepath.stem  # nome-articolo da nome-articolo.md
-
+    
     # Gestisci il campo image
     image = metadata.get('image', '')
     if isinstance(image, list):
-        image = ''
-
-    # Costruisci oggetto articolo CON il contenuto
+        image = image[0] if image else ''
+    
+    # Gestisci category come lista
+    categories = ensure_list(metadata.get('category', 'Uncategorized'))
+    if not categories:
+        categories = ['Uncategorized']
+    
+    # Gestisci tags come lista
+    tags = ensure_list(metadata.get('tags', []))
+    
+    # Gestisci draft e featured come boolean
+    draft = metadata.get('draft', False)
+    if isinstance(draft, str):
+        draft = draft.lower() == 'true'
+    
+    featured = metadata.get('featured', False)
+    if isinstance(featured, str):
+        featured = featured.lower() == 'true'
+    
+    # Costruisci oggetto articolo
     article = {
         'id': article_id,
         'title': metadata.get('title', ''),
         'description': metadata.get('description', extract_description(body)),
-        'category': metadata.get('category', 'Uncategorized'),
+        'categories': categories,  # Array di categorie
+        'category': categories[0],  # Prima categoria per retrocompatibilità
         'date': metadata.get('date', datetime.now().strftime('%Y-%m-%d')),
         'readTime': metadata.get('readTime', estimate_read_time(body)),
         'author': metadata.get('author', 'CybersecurityZen'),
         'image': image,
-        'tags': metadata.get('tags', []),
+        'tags': tags,
         'content': body,
-        'draft': is_draft(metadata.get('draft', False))
+        'draft': draft,
+        'featured': featured
     }
-
+    
     return article
 
 
-def generate_article_html(article: dict, all_articles: list[dict] = None) -> str:
+def generate_article_html(article: dict) -> str:
     """Genera la pagina HTML statica per un articolo con meta tag SEO."""
-
-    # Escape HTML per i meta tag (previene rottura attributi con caratteri speciali)
-    title = html_escape(article['title'], quote=True)
-    description = html_escape(article['description'], quote=True)
-    image = html_escape(
-        article['image'] if article['image'] else f"{SITE_URL}/assets/images/og-default.png",
-        quote=True
-    )
+    
+    title = article['title']
+    description = article['description']
+    image = article['image'] if article['image'] else f"{SITE_URL}/assets/images/og-default.png"
     url = f"{SITE_URL}/articles/{article['id']}.html"
     date = article['date']
-    author = html_escape(article['author'], quote=True)
-    category = html_escape(article['category'], quote=True)
-    tags = html_escape(
-        ', '.join(article['tags']) if article['tags'] else 'cybersecurity',
-        quote=True
-    )
-
+    author = article['author']
+    
+    # Usa tutte le categorie per i meta tag
+    categories = article.get('categories', [article.get('category', 'Uncategorized')])
+    category_display = ' | '.join(categories)
+    category_meta = categories[0] if categories else 'Uncategorized'
+    
+    # Tags per keywords
+    tags = article.get('tags', [])
+    tags_keywords = ', '.join(tags) if tags else 'cybersecurity'
+    tags_html = ' '.join([f'<a href="../blog.html?search={tag}" class="article-tag">#{tag}</a>' for tag in tags])
+    
+    # Categorie HTML (multiple)
+    categories_html = ' '.join([f'<span class="article-category-tag">{cat}</span>' for cat in categories])
+    
     # Formatta la data per display
     try:
         date_obj = datetime.strptime(date, '%Y-%m-%d')
         date_formatted = date_obj.strftime('%d %B %Y')
-    except ValueError:
+    except:
         date_formatted = date
-
-    # Calcola articoli correlati
-    related = []
-    if all_articles:
-        related = find_related_articles(article, all_articles, max_results=3)
-    related_html = generate_related_articles_html(related)
-
-    # Escape contenuto markdown per embedding sicuro in <script>
-    content_json = json.dumps(article['content'], ensure_ascii=False)
-    # Previeni rottura del tag </script> nel contenuto markdown
-    content_json = content_json.replace('</', '<\\/')
-
-    # Genera HTML dei tag con escape
-    tags_html = ' '.join([
-        f'<a href="../blog.html?search={url_quote(tag)}" class="article-tag">#{html_escape(tag)}</a>'
-        for tag in article['tags']
-    ])
-
+    
+    # Badge featured
+    featured_badge = '<span class="featured-badge"><i class="fas fa-star"></i> In evidenza</span>' if article.get('featured') else ''
+    
     html = f'''<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <!-- SEO Meta Tags -->
     <title>{title} | CybersecurityZen</title>
     <meta name="description" content="{description}">
-    <meta name="keywords" content="{tags}">
+    <meta name="keywords" content="{tags_keywords}">
     <meta name="author" content="{author}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{url}">
-
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="{url}">
@@ -300,44 +250,44 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
     <meta property="og:site_name" content="CybersecurityZen">
     <meta property="article:published_time" content="{date}">
     <meta property="article:author" content="{author}">
-    <meta property="article:section" content="{category}">
-
+    <meta property="article:section" content="{category_meta}">
+    
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{url}">
     <meta name="twitter:title" content="{title}">
     <meta name="twitter:description" content="{description}">
     <meta name="twitter:image" content="{image}">
-
+    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
-
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <!-- Highlight.js per syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-
+    
     <!-- Styles -->
     <link rel="stylesheet" href="../css/style.css">
-
+    
     <style>
         /* Article Page Styles */
         .article-hero {{
             padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
             background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
         }}
-
+        
         .article-hero-content {{
             max-width: 800px;
             margin: 0 auto;
         }}
-
+        
         .article-breadcrumb {{
             display: flex;
             align-items: center;
@@ -346,17 +296,24 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             font-family: var(--font-mono);
             font-size: 0.8rem;
         }}
-
+        
         .article-breadcrumb a {{
             color: var(--text-muted);
             text-decoration: none;
             transition: var(--transition-fast);
         }}
-
+        
         .article-breadcrumb a:hover {{
             color: var(--primary);
         }}
-
+        
+        .article-categories {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }}
+        
         .article-category-tag {{
             display: inline-block;
             font-family: var(--font-mono);
@@ -366,9 +323,21 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             padding: var(--spacing-xs) var(--spacing-md);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-glow);
-            margin-bottom: var(--spacing-md);
         }}
-
+        
+        .featured-badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-yellow);
+            background: rgba(255, 221, 0, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 221, 0, 0.3);
+        }}
+        
         .article-hero h1 {{
             font-family: var(--font-display);
             font-size: clamp(1.75rem, 4vw, 2.75rem);
@@ -376,7 +345,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             line-height: 1.3;
             margin-bottom: var(--spacing-lg);
         }}
-
+        
         .article-meta-info {{
             display: flex;
             align-items: center;
@@ -386,29 +355,29 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             font-size: 0.9rem;
             color: var(--text-secondary);
         }}
-
+        
         .article-meta-info i {{
             color: var(--primary);
             margin-right: var(--spacing-xs);
         }}
-
+        
         /* Article Content */
         .article-container {{
             max-width: 800px;
             margin: 0 auto;
             padding: var(--spacing-xl) var(--spacing-lg);
         }}
-
+        
         .article-content {{
             font-size: 1.05rem;
             line-height: 1.8;
             color: var(--text-primary);
         }}
-
+        
         .article-content h1 {{
             display: none;
         }}
-
+        
         .article-content h2 {{
             font-family: var(--font-display);
             font-size: 1.75rem;
@@ -419,7 +388,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             border-bottom: 1px solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }}
-
+        
         .article-content h3 {{
             font-family: var(--font-display);
             font-size: 1.35rem;
@@ -428,7 +397,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }}
-
+        
         .article-content h4 {{
             font-family: var(--font-display);
             font-size: 1.15rem;
@@ -437,41 +406,41 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             margin-bottom: var(--spacing-sm);
             color: var(--text-secondary);
         }}
-
+        
         .article-content p {{
             margin-bottom: var(--spacing-md);
         }}
-
+        
         .article-content a {{
             color: var(--primary);
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: var(--transition-fast);
         }}
-
+        
         .article-content a:hover {{
             border-bottom-color: var(--primary);
         }}
-
+        
         .article-content ul,
         .article-content ol {{
             margin-bottom: var(--spacing-md);
             padding-left: var(--spacing-lg);
         }}
-
+        
         .article-content li {{
             margin-bottom: var(--spacing-sm);
         }}
-
+        
         .article-content strong {{
             color: var(--text-primary);
             font-weight: 600;
         }}
-
+        
         .article-content em {{
             font-style: italic;
         }}
-
+        
         .article-content code {{
             font-family: var(--font-mono);
             font-size: 0.9em;
@@ -480,7 +449,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             border-radius: 4px;
             color: var(--primary);
         }}
-
+        
         .article-content pre {{
             background: #1e1e2e;
             border: 1px solid var(--border-color);
@@ -489,7 +458,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             overflow-x: auto;
             margin: var(--spacing-md) 0;
         }}
-
+        
         .article-content pre code {{
             background: none;
             padding: 0;
@@ -497,7 +466,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             font-size: 0.9rem;
             line-height: 1.6;
         }}
-
+        
         .article-content blockquote {{
             border-left: 3px solid var(--primary);
             padding-left: var(--spacing-md);
@@ -508,7 +477,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             padding: var(--spacing-md);
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         }}
-
+        
         .article-content img {{
             max-width: 100%;
             height: auto;
@@ -516,37 +485,37 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             margin: var(--spacing-md) 0;
             border: 1px solid var(--border-color);
         }}
-
+        
         .article-content table {{
             width: 100%;
             border-collapse: collapse;
             margin: var(--spacing-md) 0;
             font-size: 0.95rem;
         }}
-
+        
         .article-content th,
         .article-content td {{
             border: 1px solid var(--border-color);
             padding: var(--spacing-sm) var(--spacing-md);
             text-align: left;
         }}
-
+        
         .article-content th {{
             background: var(--bg-tertiary);
             font-weight: 600;
             color: var(--primary);
         }}
-
+        
         .article-content tr:nth-child(even) {{
             background: rgba(255, 255, 255, 0.02);
         }}
-
+        
         .article-content hr {{
             border: none;
             border-top: 1px solid var(--border-color);
             margin: var(--spacing-xl) 0;
         }}
-
+        
         /* Tags */
         .article-tags {{
             display: flex;
@@ -556,7 +525,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             padding-top: var(--spacing-lg);
             border-top: 1px solid var(--border-color);
         }}
-
+        
         .article-tag {{
             font-family: var(--font-mono);
             font-size: 0.75rem;
@@ -567,12 +536,12 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             text-decoration: none;
             transition: var(--transition-fast);
         }}
-
+        
         .article-tag:hover {{
             background: rgba(0, 240, 255, 0.1);
             color: var(--primary);
         }}
-
+        
         /* Share Buttons */
         .article-share {{
             display: flex;
@@ -580,13 +549,13 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             gap: var(--spacing-md);
             margin-top: var(--spacing-lg);
         }}
-
+        
         .article-share span {{
             font-family: var(--font-display);
             font-size: 0.9rem;
             color: var(--text-secondary);
         }}
-
+        
         .share-btn {{
             width: 40px;
             height: 40px;
@@ -601,12 +570,12 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             transition: var(--transition-fast);
             cursor: pointer;
         }}
-
+        
         .share-btn:hover {{
             border-color: var(--primary);
             color: var(--primary);
         }}
-
+        
         /* Back Link */
         .back-link {{
             display: inline-flex;
@@ -618,141 +587,9 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             margin-bottom: var(--spacing-lg);
             transition: var(--transition-fast);
         }}
-
+        
         .back-link:hover {{
             color: var(--primary);
-        }}
-
-        /* Related Articles */
-        .related-articles {{
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-xl);
-            border-top: 1px solid var(--border-color);
-        }}
-
-        .related-articles-title {{
-            font-family: var(--font-display);
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-lg);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }}
-
-        .related-articles-title i {{
-            color: var(--primary);
-            font-size: 1rem;
-        }}
-
-        .related-articles-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: var(--spacing-md);
-        }}
-
-        .related-card {{
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            text-decoration: none;
-            transition: var(--transition-normal);
-            display: flex;
-            flex-direction: column;
-        }}
-
-        .related-card:hover {{
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
-        }}
-
-        .related-card-image {{
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            background: var(--bg-tertiary);
-        }}
-
-        .related-card-icon {{
-            width: 100%;
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-card) 100%);
-        }}
-
-        .related-card-icon i {{
-            font-size: 2.5rem;
-            color: var(--primary);
-            opacity: 0.4;
-        }}
-
-        .related-card-content {{
-            padding: var(--spacing-md);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }}
-
-        .related-card-category {{
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: var(--spacing-xs);
-        }}
-
-        .related-card-title {{
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-xs);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }}
-
-        .related-card:hover .related-card-title {{
-            color: var(--primary);
-        }}
-
-        .related-card-excerpt {{
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: var(--spacing-sm);
-            flex: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }}
-
-        .related-card-meta {{
-            display: flex;
-            gap: var(--spacing-md);
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }}
-
-        .related-card-meta i {{
-            margin-right: 3px;
-            color: var(--primary);
-        }}
-
-        @media (max-width: 768px) {{
-            .related-articles-grid {{
-                grid-template-columns: 1fr;
-            }}
         }}
     </style>
 </head>
@@ -771,13 +608,13 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
                 <span class="logo-bracket">]</span>
                 <span class="logo-cursor">_</span>
             </a>
-
+            
             <button class="nav-toggle" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-
+            
             <ul class="nav-menu">
                 <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
                 <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
@@ -797,9 +634,12 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
                 <span>/</span>
                 <span>{title}</span>
             </nav>
-
+            
             <div id="article-header">
-                <span class="article-category-tag">{category}</span>
+                <div class="article-categories">
+                    {categories_html}
+                    {featured_badge}
+                </div>
                 <h1>{title}</h1>
                 <div class="article-meta-info">
                     <span><i class="fas fa-calendar"></i> {date_formatted}</span>
@@ -815,16 +655,16 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
         <a href="../blog.html" class="back-link">
             <i class="fas fa-arrow-left"></i> Torna al Blog
         </a>
-
+        
         <div id="article-content" class="article-content">
             <!-- Contenuto caricato da JavaScript -->
         </div>
-
+        
         <!-- Tags -->
         <div id="article-tags" class="article-tags">
             {tags_html}
         </div>
-
+        
         <!-- Share -->
         <div class="article-share">
             <span>Condividi:</span>
@@ -838,8 +678,6 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
                 <i class="fas fa-link"></i>
             </button>
         </div>
-
-        {related_html}
     </article>
 
     <!-- Footer -->
@@ -850,7 +688,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
                     <span class="footer-logo">[CybersecurityZen]</span>
                     <p>Security Research • Tools • Knowledge</p>
                 </div>
-
+                
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Navigazione</h4>
@@ -864,7 +702,7 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
                     </div>
                 </div>
             </div>
-
+            
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
             </div>
@@ -888,8 +726,8 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
     <script src="../js/main.js"></script>
     <script>
         // Contenuto Markdown dell'articolo
-        const articleContent = {content_json};
-
+        const articleContent = {json.dumps(article['content'], ensure_ascii=False)};
+        
         // Configura marked
         marked.setOptions({{
             highlight: function(code, lang) {{
@@ -901,27 +739,27 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
             breaks: true,
             gfm: true
         }});
-
+        
         // Renderizza il contenuto
         document.getElementById('article-content').innerHTML = marked.parse(articleContent);
-
+        
         // Applica syntax highlighting
         document.querySelectorAll('pre code').forEach(block => {{
             hljs.highlightElement(block);
         }});
-
+        
         // Funzioni di condivisione
         function shareOnTwitter() {{
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(document.title);
             window.open(`https://twitter.com/intent/tweet?url=${{url}}&text=${{text}}`, '_blank');
         }}
-
+        
         function shareOnLinkedIn() {{
             const url = encodeURIComponent(window.location.href);
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${{url}}`, '_blank');
         }}
-
+        
         function copyLink() {{
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {{
@@ -936,93 +774,81 @@ def generate_article_html(article: dict, all_articles: list[dict] = None) -> str
     </script>
 </body>
 </html>'''
-
+    
     return html
-
-
-def write_if_changed(filepath: Path, content: str) -> bool:
-    """Scrive il file solo se il contenuto e' diverso. Ritorna True se scritto."""
-    if filepath.exists():
-        try:
-            existing = filepath.read_text(encoding='utf-8')
-            if existing == content:
-                return False
-        except Exception:
-            pass
-
-    filepath.write_text(content, encoding='utf-8')
-    return True
 
 
 def main():
     print("🔍 Scanning articles directory...")
-
+    
     # Crea cartella data se non esiste
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-
+    
     # Trova tutti i file .md
     if not ARTICLES_DIR.exists():
         print(f"  📁 Creazione cartella {ARTICLES_DIR}")
         ARTICLES_DIR.mkdir(parents=True, exist_ok=True)
-
+    
     md_files = list(ARTICLES_DIR.glob("*.md"))
     # Escludi il template
     md_files = [f for f in md_files if f.name != 'TEMPLATE.md']
     print(f"  📄 Trovati {len(md_files)} file Markdown")
-
+    
     articles = []
-    categories = set()
-    stats = {'generated': 0, 'skipped': 0, 'drafts': 0, 'errors': 0}
-
-    # Pass 1: Processa tutti gli articoli
+    all_categories = set()
+    featured_articles = []
+    
     for filepath in md_files:
         print(f"  → Processando: {filepath.name}")
         article = process_article(filepath)
-
-        if article is None:
-            stats['errors'] += 1
-            continue
-
-        if article['draft']:
-            stats['drafts'] += 1
+        
+        if article and not article['draft']:
+            articles.append(article)
+            
+            # Aggiungi tutte le categorie
+            for cat in article.get('categories', []):
+                all_categories.add(cat)
+            
+            # Track featured
+            if article.get('featured'):
+                featured_articles.append(article['id'])
+            
+            print(f"    ✅ {article['title']}")
+            if article.get('featured'):
+                print(f"    ⭐ Featured")
+            print(f"    📂 Categorie: {', '.join(article.get('categories', []))}")
+            print(f"    🏷️  Tags: {', '.join(article.get('tags', []))}")
+            
+            # Genera pagina HTML statica
+            html_content = generate_article_html(article)
+            html_path = ARTICLES_DIR / f"{article['id']}.html"
+            html_path.write_text(html_content, encoding='utf-8')
+            print(f"    📄 Generato {html_path}")
+            
+        elif article and article['draft']:
             print(f"    ⏸️  Draft, ignorato")
-            continue
-
-        articles.append(article)
-        categories.add(article['category'])
-
-    # Ordina per data (più recenti prima)
-    articles.sort(key=lambda x: x['date'], reverse=True)
-
-    # Pass 2: Genera pagine HTML con articoli correlati
-    for article in articles:
-        html_content = generate_article_html(article, articles)
-        html_path = ARTICLES_DIR / f"{article['id']}.html"
-
-        if write_if_changed(html_path, html_content):
-            stats['generated'] += 1
-            print(f"    ✅ Generato {html_path}")
-        else:
-            stats['skipped'] += 1
-            print(f"    ⏩ Invariato, skip {html_path}")
-
+    
+    # Ordina: featured prima, poi per data
+    articles.sort(key=lambda x: (not x.get('featured', False), x['date']), reverse=True)
+    
     # Costruisci output JSON
     output = {
         'lastUpdated': datetime.now().isoformat(),
         'totalArticles': len(articles),
-        'categories': sorted(list(categories)),
+        'categories': sorted(list(all_categories)),
+        'featuredArticles': featured_articles,
         'articles': articles
     }
-
-    # Scrivi JSON (solo se cambiato, escluso lastUpdated per il confronto)
-    json_content = json.dumps(output, indent=2, ensure_ascii=False)
-    if write_if_changed(OUTPUT_FILE, json_content):
-        print(f"\n✅ Aggiornato {OUTPUT_FILE}")
-    else:
-        print(f"\n⏩ {OUTPUT_FILE} invariato")
-
-    print(f"   📊 {len(articles)} articoli in {len(categories)} categorie")
-    print(f"   📝 Generati: {stats['generated']} | Saltati: {stats['skipped']} | Draft: {stats['drafts']} | Errori: {stats['errors']}")
+    
+    # Scrivi JSON
+    OUTPUT_FILE.write_text(
+        json.dumps(output, indent=2, ensure_ascii=False),
+        encoding='utf-8'
+    )
+    
+    print(f"\n✅ Generato {OUTPUT_FILE}")
+    print(f"   📊 {len(articles)} articoli in {len(all_categories)} categorie")
+    print(f"   ⭐ {len(featured_articles)} articoli in evidenza")
 
 
 if __name__ == "__main__":
