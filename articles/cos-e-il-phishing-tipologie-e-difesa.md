@@ -19,7 +19,7 @@ tags: [
   "social engineering",
   ]
 draft: false
-featured: true
+featured: false
 ---
 
 ## Introduzione: L’arte dell’inganno digitale
