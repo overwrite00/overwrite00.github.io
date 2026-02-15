@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Analisi degli Header Email: Guida Completa per Identificare il Phishing | CybersecurityZen</title>
+    <meta name="description" content="Impara a leggere e analizzare gli header delle email per riconoscere tentativi di phishing, spoofing e altre minacce. Una guida tecnica dettagliata con esempi pratici.">
+    <meta name="keywords" content="email headers, phishing detection, SPF, DKIM, DMARC, email authentication, threat analysis">
+    <meta name="author" content="CybersecurityZen">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://overwrite00.github.io/articles/analisi-header-email-phishing.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://overwrite00.github.io/articles/analisi-header-email-phishing.html">
+    <meta property="og:title" content="Analisi degli Header Email: Guida Completa per Identificare il Phishing">
+    <meta property="og:description" content="Impara a leggere e analizzare gli header delle email per riconoscere tentativi di phishing, spoofing e altre minacce. Una guida tecnica dettagliata con esempi pratici.">
+    <meta property="og:image" content="assets/images/phishing-analysis.png">
+    <meta property="og:site_name" content="CybersecurityZen">
+    <meta property="article:published_time" content="2025-02-15">
+    <meta property="article:author" content="CybersecurityZen">
+    <meta property="article:section" content="Security Awareness">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://overwrite00.github.io/articles/analisi-header-email-phishing.html">
+    <meta name="twitter:title" content="Analisi degli Header Email: Guida Completa per Identificare il Phishing">
+    <meta name="twitter:description" content="Impara a leggere e analizzare gli header delle email per riconoscere tentativi di phishing, spoofing e altre minacce. Una guida tecnica dettagliata con esempi pratici.">
+    <meta name="twitter:image" content="assets/images/phishing-analysis.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Highlight.js per syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        /* Article Page Styles */
+        .article-hero {
+            padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
+        }
+        
+        .article-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .article-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+        
+        .article-breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .article-breadcrumb a:hover {
+            color: var(--primary);
+        }
+        
+        .article-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .article-category-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-glow);
+        }
+        
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-yellow);
+            background: rgba(255, 221, 0, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 221, 0, 0.3);
+        }
+        
+        .article-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .article-meta-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .article-meta-info i {
+            color: var(--primary);
+            margin-right: var(--spacing-xs);
+        }
+        
+        /* Article Content */
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        .article-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        
+        .article-content h1 {
+            display: none;
+        }
+        
+        .article-content h2 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        
+        .article-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .article-content h4 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+        
+        .article-content p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .article-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-fast);
+        }
+        
+        .article-content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-lg);
+        }
+        
+        .article-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .article-content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .article-content em {
+            font-style: italic;
+        }
+        
+        .article-content code {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+        }
+        
+        /* Code Block Terminal Style */
+        .code-block-wrapper {
+            position: relative;
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .code-block-header {
+            background: var(--bg-tertiary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .code-block-dots {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .code-block-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .code-block-dot.red { background: #ff5f56; }
+        .code-block-dot.yellow { background: #ffbd2e; }
+        .code-block-dot.green { background: #27c93f; }
+        
+        .code-block-lang {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: var(--spacing-md);
+        }
+        
+        .code-block-copy {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .code-block-copy:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .code-block-copy.copied {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        .article-content pre {
+            background: #1e1e2e;
+            margin: 0;
+            padding: var(--spacing-md);
+            overflow-x: auto;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .article-content blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: rgba(0, 240, 255, 0.03);
+            padding: var(--spacing-md);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: 0.95rem;
+        }
+        
+        .article-content th,
+        .article-content td {
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+        }
+        
+        .article-content th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .article-content tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        /* Tags */
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .article-tag {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .article-tag:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        /* Share Buttons */
+        .article-share {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .article-share span {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .share-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-display);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">CybersecurityZen</span>
+                <span class="logo-bracket">]</span>
+                <span class="logo-cursor">_</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
+                <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
+                <li><a href="../tools.html" class="nav-link"><i class="fas fa-wrench"></i> Tools</a></li>
+                <li><a href="https://github.com/overwrite00" target="_blank" class="nav-link nav-github"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Article Hero -->
+    <header class="article-hero">
+        <div class="article-hero-content">
+            <nav class="article-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <a href="../blog.html">Blog</a>
+                <span>/</span>
+                <span>Analisi degli Header Email: Guida Completa per Identificare il Phishing</span>
+            </nav>
+            
+            <div id="article-header">
+                <div class="article-categories">
+                    <span class="article-category-tag">Security Awareness</span> <span class="article-category-tag">Threat Analysis</span>
+                    <span class="featured-badge"><i class="fas fa-star"></i> In evidenza</span>
+                </div>
+                <h1>Analisi degli Header Email: Guida Completa per Identificare il Phishing</h1>
+                <div class="article-meta-info">
+                    <span><i class="fas fa-calendar"></i> 15 February 2025</span>
+                    <span><i class="fas fa-clock"></i> 11 min</span>
+                    <span><i class="fas fa-user"></i> CybersecurityZen</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <article class="article-container">
+        <a href="../blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Torna al Blog
+        </a>
+        
+        <div id="article-content" class="article-content">
+            <!-- Contenuto caricato da JavaScript -->
+        </div>
+        
+        <!-- Tags -->
+        <div id="article-tags" class="article-tags">
+            <a href="../blog.html?search=email headers" class="article-tag">#email headers</a> <a href="../blog.html?search=phishing detection" class="article-tag">#phishing detection</a> <a href="../blog.html?search=SPF" class="article-tag">#SPF</a> <a href="../blog.html?search=DKIM" class="article-tag">#DKIM</a> <a href="../blog.html?search=DMARC" class="article-tag">#DMARC</a> <a href="../blog.html?search=email authentication" class="article-tag">#email authentication</a> <a href="../blog.html?search=threat analysis" class="article-tag">#threat analysis</a>
+        </div>
+        
+        <!-- Share -->
+        <div class="article-share">
+            <span>Condividi:</span>
+            <button class="share-btn" title="Condividi su Twitter" onclick="shareOnTwitter()">
+                <i class="fab fa-twitter"></i>
+            </button>
+            <button class="share-btn" title="Condividi su LinkedIn" onclick="shareOnLinkedIn()">
+                <i class="fab fa-linkedin-in"></i>
+            </button>
+            <button class="share-btn" title="Copia link" onclick="copyLink()">
+                <i class="fas fa-link"></i>
+            </button>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">[CybersecurityZen]</span>
+                    <p>Security Research • Tools • Knowledge</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigazione</h4>
+                        <a href="../index.html">Home</a>
+                        <a href="../blog.html">Blog</a>
+                        <a href="../tools.html">Tools</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <a href="https://github.com/overwrite00" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Contenuto Markdown dell'articolo
+        const articleContent = "# Analisi degli Header Email: Guida Completa per Identificare il Phishing\n\n> **Questo articolo fa parte di una serie sul phishing.** Se non l'hai ancora fatto, ti consiglio di leggere prima [Cos'è il Phishing: Tipologie e Difesa](/articles/cos-e-il-phishing-tipologie-e-difesa.html) per una panoramica introduttiva, e [Analisi Tecnica: Phishing, Spoofing ed Evasione](/articles/analisi-tecnica-phishing-spoofing-evasione.html) per comprendere le tecniche utilizzate dagli attaccanti.\n\nGli header delle email rappresentano il \"DNA\" di ogni messaggio di posta elettronica. Contengono informazioni cruciali sul percorso del messaggio, l'autenticità del mittente e numerosi metadati che possono rivelare tentativi di phishing, spoofing o altre attività malevole. In questa guida approfondita, esploreremo ogni campo degli header email e come utilizzarli per proteggere te stesso e la tua organizzazione.\n\n## Cosa Sono gli Header Email?\n\nGli header email sono una sezione di metadati invisibile all'utente comune, posizionata all'inizio di ogni messaggio di posta elettronica. Mentre il destinatario vede solo il corpo del messaggio, i campi \"Da\", \"A\" e \"Oggetto\", gli header contengono decine di righe di informazioni tecniche che documentano l'intero viaggio del messaggio dal mittente al destinatario.\n\nOgni server di posta che elabora il messaggio aggiunge le proprie informazioni agli header, creando una traccia dettagliata che può essere analizzata per verificare l'autenticità del messaggio.\n\n## Come Visualizzare gli Header Email\n\nPrima di analizzare gli header, è necessario sapere come accedervi nei principali client di posta:\n\n**Gmail**: Apri l'email → Clicca sui tre puntini verticali → \"Mostra originale\"\n\n**Outlook (Web)**: Apri l'email → Clicca sui tre puntini → \"Visualizza\" → \"Visualizza origine messaggio\"\n\n**Outlook (Desktop)**: Apri l'email → File → Proprietà → \"Intestazioni Internet\"\n\n**Thunderbird**: Apri l'email → Visualizza → Sorgente del messaggio (Ctrl+U)\n\n**Apple Mail**: Apri l'email → Visualizza → Messaggio → Intestazioni complete\n\n---\n\n## Anatomia Completa degli Header Email\n\n### 1. Received (Il Campo Più Importante)\n\nIl campo `Received` è probabilmente il più critico per l'analisi forense delle email. Ogni server di posta che gestisce il messaggio aggiunge una riga \"Received\" in cima agli header esistenti. Questo significa che **gli header Received vanno letti dal basso verso l'alto** per seguire il percorso cronologico del messaggio.\n\n**Struttura tipica:**\n\n```\nReceived: from mail-server.example.com (mail-server.example.com [93.184.216.34])\n        by mx.recipient.com (Postfix)\n        with ESMTPS id ABC123DEF456\n        for <destinatario@recipient.com>;\n        Sat, 15 Feb 2025 10:30:45 +0100 (CET)\n```\n\n**Elementi da analizzare:**\n\n| Elemento | Descrizione | Cosa Verificare |\n|----------|-------------|-----------------|\n| `from` | Server mittente dichiarato | Deve corrispondere al dominio del mittente |\n| `(hostname [IP])` | Hostname e IP reali | Verifica con reverse DNS lookup |\n| `by` | Server ricevente | Il tuo server di posta |\n| `with` | Protocollo utilizzato | ESMTPS indica connessione cifrata |\n| `for` | Destinatario | Deve essere il tuo indirizzo |\n| `timestamp` | Data e ora | Sequenza cronologica coerente |\n\n**🚨 Red Flags da Cercare:**\n\n- **IP che non corrisponde al dominio dichiarato**: Se l'email dichiara di provenire da `paypal.com` ma l'IP risolve a un server in un paese improbabile, è sospetto\n- **Salti geografici illogici**: Un'email da una banca italiana che passa per server in Russia o Cina\n- **Timestamp inconsistenti**: Date fuori sequenza o nel futuro\n- **Hostname generici**: Server come `vps12345.cheaphosting.com` per email \"aziendali\"\n- **Assenza di crittografia**: `with SMTP` invece di `with ESMTPS` per comunicazioni sensibili\n\n**Esempio di Header Received Sospetto:**\n\n```\nReceived: from smtp.paypal.com (unknown [185.234.xx.xx])\n        by mail.attacker-server.ru\n        with SMTP\n```\n\nQui vediamo che il server dichiara di essere `smtp.paypal.com`, ma:\n\n- L'IP reale è contrassegnato come \"unknown\"\n- Passa attraverso un server russo\n- Non usa connessione cifrata (SMTP semplice)\n\n---\n\n### 2. From (Mittente)\n\n```\nFrom: \"Servizio Clienti PayPal\" <security@paypal.com>\n```\n\nIl campo `From` mostra il mittente come appare al destinatario. È composto da due parti:\n\n- **Display Name**: Il nome visualizzato (\"Servizio Clienti PayPal\")\n- **Email Address**: L'indirizzo effettivo (<security@paypal.com>)\n\n**🚨 Red Flags:**\n\n- **Discrepanza nome/indirizzo**: `\"Amazon Support\" <support@amaz0n-security.com>`\n- **Domini simili ma diversi** (typosquatting):\n  - `paypa1.com` invece di `paypal.com`\n  - `arnazon.com` invece di `amazon.com`\n  - `microsoftonline-login.com` invece di `microsoft.com`\n- **Domini gratuiti per comunicazioni aziendali**: `amazon.support@gmail.com`\n- **Sottodomini ingannevoli**: `paypal.com.malicious-site.com`\n\n**Importante**: Il campo `From` è facilmente falsificabile (spoofing). Non basare mai la verifica solo su questo campo.\n\n---\n\n### 3. Return-Path (Envelope Sender)\n\n```\nReturn-Path: <bounce-handler@real-sender.com>\n```\n\nIl `Return-Path` indica dove vengono inviate le notifiche di mancata consegna (bounce). In email legittime, dovrebbe corrispondere al dominio del mittente.\n\n**🚨 Red Flags:**\n\n- **Dominio completamente diverso dal From**: Se `From` è `@paypal.com` ma `Return-Path` è `@random-server.xyz`\n- **Indirizzi usa e getta**: Domini appena registrati o servizi temporanei\n- **Assenza del campo**: Alcune email di phishing omettono questo campo\n\n---\n\n### 4. Reply-To\n\n```\nReply-To: response@different-domain.com\n```\n\nSpecifica dove verranno inviate le risposte. Nelle email legittime, solitamente corrisponde al mittente o a un indirizzo correlato.\n\n**🚨 Red Flags:**\n\n- **Dominio diverso dal mittente**: Email \"da\" una banca con reply-to su Gmail\n- **Indirizzi generici sospetti**: `claims@gmail.com`, `support123@yahoo.com`\n- **Tentativo di catturare risposte**: L'attaccante vuole che tu risponda a un indirizzo controllato da lui\n\n---\n\n### 5. Message-ID\n\n```\nMessage-ID: <1234567890.123456.789@mail.legitimate-company.com>\n```\n\nIdentificatore univoco del messaggio generato dal server di origine. Il dominio dopo la `@` dovrebbe corrispondere al server mittente.\n\n**🚨 Red Flags:**\n\n- **Dominio non correlato al mittente**: Message-ID con dominio diverso dall'organizzazione dichiarata\n- **Formato anomalo**: ID troppo semplici o pattern non standard\n- **ID duplicati**: Lo stesso Message-ID usato per email diverse (indica automazione malevola)\n\n---\n\n### 6. X-Originating-IP\n\n```\nX-Originating-IP: [192.168.1.100]\n```\n\nAlcuni provider (come Outlook/Hotmail) includono l'IP originale del mittente. Questo campo può rivelare la vera origine geografica del messaggio.\n\n**Come Analizzarlo:**\n\n1. Copia l'indirizzo IP\n2. Usa servizi come `whatismyipaddress.com` o `ipinfo.io` per geolocalizzarlo\n3. Confronta con la presunta origine del messaggio\n\n**🚨 Red Flags:**\n\n- **Localizzazione inaspettata**: Un'email dalla tua banca italiana originata da un IP nigeriano o cinese\n- **IP di VPN/Tor noti**: Indica tentativi di anonimizzazione\n- **IP residenziali per comunicazioni aziendali**: Le aziende usano IP statici aziendali\n\n---\n\n## Campi di Autenticazione Email\n\nQuesti campi sono fondamentali per verificare l'autenticità di un'email. Rappresentano i tre pilastri della sicurezza email moderna.\n\n### 7. SPF (Sender Policy Framework)\n\n```\nReceived-SPF: pass (google.com: domain of info@legitimate-company.com \n              designates 209.85.220.41 as permitted sender)\n```\n\nSPF verifica che il server che invia l'email sia autorizzato dal dominio del mittente. Il dominio pubblica un record DNS TXT che elenca i server autorizzati a inviare email per suo conto.\n\n**Possibili risultati:**\n\n| Risultato | Significato | Rischio |\n|-----------|-------------|---------|\n| `pass` | Server autorizzato | ✅ Basso |\n| `fail` | Server NON autorizzato | 🚨 Alto - Probabile spoofing |\n| `softfail` | Probabilmente non autorizzato | ⚠️ Medio - Sospetto |\n| `neutral` | Nessuna policy definita | ⚠️ Medio - Inconcludente |\n| `none` | Nessun record SPF | ⚠️ Medio - Configurazione mancante |\n| `temperror` | Errore temporaneo DNS | Riprovare |\n| `permerror` | Errore nella sintassi SPF | Configurazione errata |\n\n**🚨 Red Flags:**\n\n- **`fail` su email che dichiarano di provenire da grandi aziende**: Tutte le grandi aziende hanno SPF configurato\n- **`none` per banche o istituzioni finanziarie**: Improbabile che non abbiano SPF\n\n---\n\n### 8. DKIM (DomainKeys Identified Mail)\n\n```\nDKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n        d=legitimate-company.com; s=selector1;\n        h=from:to:subject:date:message-id;\n        bh=abc123...;\n        b=xyz789...\n```\n\nDKIM aggiunge una firma crittografica all'email. Il server ricevente può verificare questa firma usando la chiave pubblica nel DNS del dominio mittente.\n\n**Elementi chiave:**\n\n| Parametro | Descrizione |\n|-----------|-------------|\n| `d=` | Dominio che ha firmato (deve corrispondere al From) |\n| `s=` | Selettore per trovare la chiave pubblica |\n| `h=` | Header inclusi nella firma |\n| `b=` | La firma digitale effettiva |\n| `bh=` | Hash del corpo del messaggio |\n\n**Verifica DKIM (Authentication-Results):**\n\n```\nAuthentication-Results: mx.google.com;\n       dkim=pass header.d=legitimate-company.com\n```\n\n**🚨 Red Flags:**\n\n- **`dkim=fail`**: La firma non è valida - il messaggio potrebbe essere stato modificato o è falsificato\n- **Dominio `d=` diverso dal From**: Discrepanza tra chi firma e chi dichiara di inviare\n- **Assenza di DKIM per grandi organizzazioni**: La maggior parte delle aziende serie usa DKIM\n\n---\n\n### 9. DMARC (Domain-based Message Authentication)\n\n```\nAuthentication-Results: mx.google.com;\n       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=legitimate-company.com\n```\n\nDMARC unifica SPF e DKIM, definendo cosa fare con le email che falliscono i controlli.\n\n**Policy DMARC:**\n\n| Policy | Azione |\n|--------|--------|\n| `p=none` | Solo monitoraggio, nessun blocco |\n| `p=quarantine` | Email sospette vanno in spam |\n| `p=reject` | Email non autenticate rifiutate |\n\n**🚨 Red Flags:**\n\n- **`dmarc=fail` con email \"importanti\"**: Banche, PayPal, Amazon hanno tutti `p=reject`\n- **Assenza di DMARC per istituzioni finanziarie**: Estremamente sospetto\n\n---\n\n### 10. Authentication-Results (Sommario)\n\nQuesto header riassume tutti i controlli di autenticazione:\n\n```\nAuthentication-Results: mx.google.com;\n       spf=pass (google.com: domain of info@company.com designates \n           209.85.220.41 as permitted sender) smtp.mailfrom=info@company.com;\n       dkim=pass header.d=company.com header.s=selector1 header.b=abc123;\n       dmarc=pass (p=REJECT sp=REJECT) header.from=company.com\n```\n\n**Email Legittima**: Tutti e tre `pass`\n**Email Sospetta**: Uno o più `fail` o `softfail`\n\n---\n\n## Altri Header Importanti\n\n### 11. X-Mailer / User-Agent\n\n```\nX-Mailer: Microsoft Outlook 16.0\nUser-Agent: Mozilla Thunderbird 102.0\n```\n\nIndica il software usato per comporre l'email.\n\n**🚨 Red Flags:**\n\n- **Script o bot**: `X-Mailer: PHPMailer 6.0.0` per \"email personali\"\n- **Inconsistenze**: Email \"da iPhone\" con X-Mailer di Outlook\n- **Versioni obsolete o inesistenti**: Software non più esistente\n\n---\n\n### 12. X-Priority / Importance\n\n```\nX-Priority: 1 (Highest)\nImportance: High\n```\n\nIndica la priorità del messaggio.\n\n**🚨 Red Flags:**\n\n- **Priorità alta su email non sollecitate**: Tattica per creare urgenza\n- **Combinato con oggetti allarmisti**: \"URGENTE: Il tuo account sarà sospeso\"\n\n---\n\n### 13. Content-Type\n\n```\nContent-Type: multipart/mixed; boundary=\"----=_Part_123456\"\nContent-Type: text/html; charset=\"UTF-8\"\n```\n\nSpecifica il formato del contenuto del messaggio.\n\n**🚨 Red Flags:**\n\n- **HTML nascosto in email \"plain text\"**: Potrebbe contenere link mascherati\n- **Allegati sospetti**: `application/x-msdownload`, `.exe`, `.scr`, `.vbs`\n\n---\n\n### 14. X-Spam-Status e X-Spam-Score\n\n```\nX-Spam-Status: No, score=-2.0 required=5.0\nX-Spam-Score: -2.0\n```\n\nValutazione antispam del server ricevente. Score negativi indicano email più probabilmente legittime.\n\n---\n\n## Checklist Pratica di Analisi\n\nQuando analizzi un'email sospetta, segui questa checklist:\n\n### ✅ Verifica di Base\n\n- [ ] Il dominio del mittente è scritto correttamente? (no typosquatting)\n- [ ] From, Return-Path e Reply-To sono coerenti?\n- [ ] Il Message-ID corrisponde al dominio mittente?\n\n### ✅ Analisi del Percorso (Received Headers)\n\n- [ ] Leggi i Received dal basso verso l'alto\n- [ ] Gli IP corrispondono ai domini dichiarati?\n- [ ] Il percorso geografico è logico?\n- [ ] I timestamp sono in sequenza?\n- [ ] È stata usata crittografia (ESMTPS)?\n\n### ✅ Autenticazione\n\n- [ ] SPF: pass?\n- [ ] DKIM: pass con dominio corretto?\n- [ ] DMARC: pass?\n- [ ] Tutti e tre i controlli superati?\n\n### ✅ Red Flags Generali\n\n- [ ] Urgenza eccessiva nel messaggio?\n- [ ] Richiesta di informazioni sensibili?\n- [ ] Link che non corrispondono al testo visualizzato?\n- [ ] Allegati non richiesti?\n- [ ] Errori grammaticali o di formattazione?\n\n---\n\n## Strumenti Utili per l'Analisi\n\n### Strumenti Online\n\n1. **MXToolbox Header Analyzer** - `mxtoolbox.com/EmailHeaders.aspx`\n   - Analisi completa e visualizzazione del percorso\n\n2. **Google Admin Toolbox** - `toolbox.googleapps.com/apps/messageheader`\n   - Ottimo per visualizzare il flusso temporale\n\n3. **Mail Header Analyzer** - `mailheader.org`\n   - Interfaccia semplice, analisi dettagliata\n\n### Verifiche DNS\n\n1. **SPF Record Check**: `dig TXT dominio.com` o `nslookup -type=TXT dominio.com`\n2. **DKIM Record Check**: `dig TXT selector._domainkey.dominio.com`\n3. **DMARC Record Check**: `dig TXT _dmarc.dominio.com`\n\n### Verifica IP\n\n1. **IPInfo.io**: Geolocalizzazione e informazioni sul provider\n2. **AbuseIPDB**: Verifica se l'IP è stato segnalato per attività malevole\n3. **VirusTotal**: Analisi di URL e IP sospetti\n\n---\n\n## Esempi Pratici\n\n### Esempio 1: Email Legittima\n\n```\nReturn-Path: <noreply@paypal.com>\nReceived: from mx1.paypal.com (mx1.paypal.com [66.211.168.123])\n        by mx.gmail.com with ESMTPS\n        for <utente@gmail.com>;\n        Sat, 15 Feb 2025 10:00:00 -0800\nFrom: \"PayPal\" <noreply@paypal.com>\nAuthentication-Results: mx.google.com;\n       spf=pass (domain of paypal.com designates 66.211.168.123 as permitted)\n       dkim=pass header.d=paypal.com\n       dmarc=pass (p=REJECT)\nMessage-ID: <123456789@paypal.com>\n```\n\n**Analisi**: ✅ Tutti gli indicatori sono positivi. SPF, DKIM e DMARC passano. Gli IP e i domini sono coerenti.\n\n### Esempio 2: Email di Phishing\n\n```\nReturn-Path: <bounce@mail-server-xyz.ru>\nReceived: from smtp.paypal.com (unknown [185.234.72.xxx])\n        by mail-server-xyz.ru with SMTP\n        for <utente@gmail.com>;\n        Sat, 15 Feb 2025 18:00:00 +0300\nFrom: \"PayPal Security Team\" <security@paypa1-secure.com>\nReply-To: paypal.verify@gmail.com\nAuthentication-Results: mx.google.com;\n       spf=fail\n       dkim=none\n       dmarc=fail\nMessage-ID: <random123@unknown-server.net>\n```\n\n**Analisi**: 🚨 Multipli red flags:\n\n- Return-Path su dominio russo\n- IP non corrisponde a PayPal\n- Dominio \"paypa1\" con numero 1 invece di \"l\"\n- Reply-To su Gmail (una banca non usa Gmail)\n- SPF e DMARC falliti\n- Nessuna firma DKIM\n- Message-ID su server sconosciuto\n- Connessione non cifrata (SMTP semplice)\n\n---\n\n## Conclusioni\n\nL'analisi degli header email è una competenza fondamentale per chiunque voglia proteggersi dal phishing. Mentre i controlli automatici (SPF, DKIM, DMARC) filtrano molte minacce, comprendere come leggere gli header ti permette di identificare anche attacchi sofisticati che potrebbero eludere i filtri.\n\nRicorda sempre:\n\n- **Non fidarti mai solo del campo \"From\"**: è facilmente falsificabile\n- **Verifica sempre i tre pilastri**: SPF, DKIM e DMARC\n- **Analizza il percorso**: i campi Received raccontano la vera storia\n- **In caso di dubbio, non cliccare**: contatta direttamente l'organizzazione tramite canali ufficiali\n\nLa sicurezza email è una responsabilità condivisa. Più persone sanno riconoscere il phishing, più sicuro diventa l'ecosistema per tutti.\n\n---\n\n## Articoli Correlati\n\nQuesta guida fa parte di una serie completa sul phishing. Per approfondire l'argomento, consulta gli altri articoli:\n\n1. **[Cos'è il Phishing: Tipologie e Difesa](/articles/cos-e-il-phishing-tipologie-e-difesa.html)** - Introduzione al fenomeno del phishing, le diverse tipologie di attacco e le strategie di difesa fondamentali.\n\n2. **[Analisi Tecnica: Phishing, Spoofing ed Evasione](/articles/analisi-tecnica-phishing-spoofing-evasione.html)** - Approfondimento sulle tecniche utilizzate dagli attaccanti per falsificare l'identità del mittente e aggirare i sistemi di sicurezza.\n\n3. **Analisi degli Header Email** *(questo articolo)* - Guida pratica all'analisi forense degli header per identificare email fraudolente.\n\n---\n\n*Ultimo aggiornamento: Febbraio 2025*\n";
+        
+        // Configura marked
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return code;
+            },
+            breaks: true,
+            gfm: true
+        });
+        
+        // Renderizza il contenuto
+        document.getElementById('article-content').innerHTML = marked.parse(articleContent);
+        
+        // Wrappa i blocchi pre con lo stile terminal
+        document.querySelectorAll('.article-content pre').forEach((pre, index) => {
+            // Trova il linguaggio dal tag code
+            const code = pre.querySelector('code');
+            let lang = '';
+            if (code && code.className) {
+                const match = code.className.match(/language-(\w+)/);
+                lang = match ? match[1] : '';
+            }
+            
+            // Crea il wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            
+            // Crea l'header
+            const header = document.createElement('div');
+            header.className = 'code-block-header';
+            header.innerHTML = `
+                <div class="code-block-dots">
+                    <span class="code-block-dot red"></span>
+                    <span class="code-block-dot yellow"></span>
+                    <span class="code-block-dot green"></span>
+                    <span class="code-block-lang">${lang || 'code'}</span>
+                </div>
+                <button class="code-block-copy" data-index="${index}">
+                    <i class="fas fa-copy"></i> Copia
+                </button>
+            `;
+            
+            // Inserisci il wrapper
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(header);
+            wrapper.appendChild(pre);
+        });
+        
+        // Applica syntax highlighting
+        document.querySelectorAll('pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+        
+        // Funzione copia codice
+        document.querySelectorAll('.code-block-copy').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const wrapper = this.closest('.code-block-wrapper');
+                const code = wrapper.querySelector('code');
+                const text = code ? code.textContent : '';
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.innerHTML = '<i class="fas fa-check"></i> Copiato!';
+                    this.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copia';
+                        this.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    this.innerHTML = '<i class="fas fa-times"></i> Errore';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copia';
+                    }, 2000);
+                }
+            });
+        });
+        
+        // Funzioni di condivisione
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.title);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+        }
+        
+        function shareOnLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+        
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    if (typeof showToast === 'function') {
+                        showToast('Link copiato negli appunti!');
+                    } else {
+                        alert('Link copiato!');
+                    }
+                })
+                .catch(() => alert('Errore durante la copia'));
+        }
+    </script>
+</body>
+</html>
