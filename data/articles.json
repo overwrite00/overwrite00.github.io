@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-15T18:39:16.523815",
+  "lastUpdated": "2026-02-15T18:43:31.072920",
   "totalArticles": 5,
   "categories": [
     "Fundamentals",
@@ -12,7 +12,7 @@
   ],
   "articles": [
     {
-      "id": "analisi-tecnica-phishing-spoofing-evasione.html",
+      "id": "analisi-tecnica-phishing-spoofing-evasione",
       "title": "Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione",
       "description": "Approfondimento tecnico sul phishing: analizziamo header email, spoofing, protocolli SPF/DKIM/DMARC e tecniche di evasione.",
       "categories": [
