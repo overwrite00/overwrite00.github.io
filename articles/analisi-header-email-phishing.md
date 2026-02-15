@@ -18,7 +18,7 @@ tags: [
         ]
 image: "assets/images/phishing-analysis.png"
 draft: false
-featured: false
+featured: true
 ---
 
 # Analisi degli Header Email: Guida Completa per Identificare il Phishing
