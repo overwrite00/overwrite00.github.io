@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <!-- SEO Meta Tags -->
     <title>Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione | CybersecurityZen</title>
     <meta name="description" content="Approfondimento tecnico sul phishing: analizziamo header email, spoofing, protocolli SPF/DKIM/DMARC e tecniche di evasione.">
@@ -11,7 +11,7 @@
     <meta name="author" content="CybersecurityZen">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://overwrite00.github.io/articles/analisi-tecnica-phishing-spoofing-evasione.html.html">
-
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://overwrite00.github.io/articles/analisi-tecnica-phishing-spoofing-evasione.html.html">
@@ -22,43 +22,43 @@
     <meta property="article:published_time" content="2026-02-08">
     <meta property="article:author" content="CybersecurityZen">
     <meta property="article:section" content="Uncategorized">
-
+    
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://overwrite00.github.io/articles/analisi-tecnica-phishing-spoofing-evasione.html.html">
     <meta name="twitter:title" content="Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione">
     <meta name="twitter:description" content="Approfondimento tecnico sul phishing: analizziamo header email, spoofing, protocolli SPF/DKIM/DMARC e tecniche di evasione.">
     <meta name="twitter:image" content="assets/images/phishing-analysis.png">
-
+    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
-
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <!-- Highlight.js per syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-
+    
     <!-- Styles -->
     <link rel="stylesheet" href="../css/style.css">
-
+    
     <style>
         /* Article Page Styles */
         .article-hero {
             padding: calc(80px + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
             background: linear-gradient(180deg, rgba(0, 240, 255, 0.03) 0%, transparent 100%);
         }
-
+        
         .article-hero-content {
             max-width: 800px;
             margin: 0 auto;
         }
-
+        
         .article-breadcrumb {
             display: flex;
             align-items: center;
@@ -67,17 +67,24 @@
             font-family: var(--font-mono);
             font-size: 0.8rem;
         }
-
+        
         .article-breadcrumb a {
             color: var(--text-muted);
             text-decoration: none;
             transition: var(--transition-fast);
         }
-
+        
         .article-breadcrumb a:hover {
             color: var(--primary);
         }
-
+        
+        .article-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
         .article-category-tag {
             display: inline-block;
             font-family: var(--font-mono);
@@ -87,9 +94,21 @@
             padding: var(--spacing-xs) var(--spacing-md);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-glow);
-            margin-bottom: var(--spacing-md);
         }
-
+        
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-yellow);
+            background: rgba(255, 221, 0, 0.1);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 221, 0, 0.3);
+        }
+        
         .article-hero h1 {
             font-family: var(--font-display);
             font-size: clamp(1.75rem, 4vw, 2.75rem);
@@ -97,7 +116,7 @@
             line-height: 1.3;
             margin-bottom: var(--spacing-lg);
         }
-
+        
         .article-meta-info {
             display: flex;
             align-items: center;
@@ -107,29 +126,29 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-
+        
         .article-meta-info i {
             color: var(--primary);
             margin-right: var(--spacing-xs);
         }
-
+        
         /* Article Content */
         .article-container {
             max-width: 800px;
             margin: 0 auto;
             padding: var(--spacing-xl) var(--spacing-lg);
         }
-
+        
         .article-content {
             font-size: 1.05rem;
             line-height: 1.8;
             color: var(--text-primary);
         }
-
+        
         .article-content h1 {
             display: none;
         }
-
+        
         .article-content h2 {
             font-family: var(--font-display);
             font-size: 1.75rem;
@@ -140,7 +159,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }
-
+        
         .article-content h3 {
             font-family: var(--font-display);
             font-size: 1.35rem;
@@ -149,7 +168,7 @@
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
-
+        
         .article-content h4 {
             font-family: var(--font-display);
             font-size: 1.15rem;
@@ -158,41 +177,41 @@
             margin-bottom: var(--spacing-sm);
             color: var(--text-secondary);
         }
-
+        
         .article-content p {
             margin-bottom: var(--spacing-md);
         }
-
+        
         .article-content a {
             color: var(--primary);
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: var(--transition-fast);
         }
-
+        
         .article-content a:hover {
             border-bottom-color: var(--primary);
         }
-
+        
         .article-content ul,
         .article-content ol {
             margin-bottom: var(--spacing-md);
             padding-left: var(--spacing-lg);
         }
-
+        
         .article-content li {
             margin-bottom: var(--spacing-sm);
         }
-
+        
         .article-content strong {
             color: var(--text-primary);
             font-weight: 600;
         }
-
+        
         .article-content em {
             font-style: italic;
         }
-
+        
         .article-content code {
             font-family: var(--font-mono);
             font-size: 0.9em;
@@ -201,7 +220,7 @@
             border-radius: 4px;
             color: var(--primary);
         }
-
+        
         .article-content pre {
             background: #1e1e2e;
             border: 1px solid var(--border-color);
@@ -210,7 +229,7 @@
             overflow-x: auto;
             margin: var(--spacing-md) 0;
         }
-
+        
         .article-content pre code {
             background: none;
             padding: 0;
@@ -218,7 +237,7 @@
             font-size: 0.9rem;
             line-height: 1.6;
         }
-
+        
         .article-content blockquote {
             border-left: 3px solid var(--primary);
             padding-left: var(--spacing-md);
@@ -229,7 +248,7 @@
             padding: var(--spacing-md);
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         }
-
+        
         .article-content img {
             max-width: 100%;
             height: auto;
@@ -237,37 +256,37 @@
             margin: var(--spacing-md) 0;
             border: 1px solid var(--border-color);
         }
-
+        
         .article-content table {
             width: 100%;
             border-collapse: collapse;
             margin: var(--spacing-md) 0;
             font-size: 0.95rem;
         }
-
+        
         .article-content th,
         .article-content td {
             border: 1px solid var(--border-color);
             padding: var(--spacing-sm) var(--spacing-md);
             text-align: left;
         }
-
+        
         .article-content th {
             background: var(--bg-tertiary);
             font-weight: 600;
             color: var(--primary);
         }
-
+        
         .article-content tr:nth-child(even) {
             background: rgba(255, 255, 255, 0.02);
         }
-
+        
         .article-content hr {
             border: none;
             border-top: 1px solid var(--border-color);
             margin: var(--spacing-xl) 0;
         }
-
+        
         /* Tags */
         .article-tags {
             display: flex;
@@ -277,7 +296,7 @@
             padding-top: var(--spacing-lg);
             border-top: 1px solid var(--border-color);
         }
-
+        
         .article-tag {
             font-family: var(--font-mono);
             font-size: 0.75rem;
@@ -288,12 +307,12 @@
             text-decoration: none;
             transition: var(--transition-fast);
         }
-
+        
         .article-tag:hover {
             background: rgba(0, 240, 255, 0.1);
             color: var(--primary);
         }
-
+        
         /* Share Buttons */
         .article-share {
             display: flex;
@@ -301,13 +320,13 @@
             gap: var(--spacing-md);
             margin-top: var(--spacing-lg);
         }
-
+        
         .article-share span {
             font-family: var(--font-display);
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-
+        
         .share-btn {
             width: 40px;
             height: 40px;
@@ -322,12 +341,12 @@
             transition: var(--transition-fast);
             cursor: pointer;
         }
-
+        
         .share-btn:hover {
             border-color: var(--primary);
             color: var(--primary);
         }
-
+        
         /* Back Link */
         .back-link {
             display: inline-flex;
@@ -339,141 +358,9 @@
             margin-bottom: var(--spacing-lg);
             transition: var(--transition-fast);
         }
-
+        
         .back-link:hover {
             color: var(--primary);
-        }
-
-        /* Related Articles */
-        .related-articles {
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-xl);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .related-articles-title {
-            font-family: var(--font-display);
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-lg);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .related-articles-title i {
-            color: var(--primary);
-            font-size: 1rem;
-        }
-
-        .related-articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: var(--spacing-md);
-        }
-
-        .related-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            text-decoration: none;
-            transition: var(--transition-normal);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .related-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
-        }
-
-        .related-card-image {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            background: var(--bg-tertiary);
-        }
-
-        .related-card-icon {
-            width: 100%;
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-card) 100%);
-        }
-
-        .related-card-icon i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            opacity: 0.4;
-        }
-
-        .related-card-content {
-            padding: var(--spacing-md);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .related-card-category {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .related-card-title {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-xs);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .related-card:hover .related-card-title {
-            color: var(--primary);
-        }
-
-        .related-card-excerpt {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: var(--spacing-sm);
-            flex: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .related-card-meta {
-            display: flex;
-            gap: var(--spacing-md);
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        .related-card-meta i {
-            margin-right: 3px;
-            color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .related-articles-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -492,13 +379,13 @@
                 <span class="logo-bracket">]</span>
                 <span class="logo-cursor">_</span>
             </a>
-
+            
             <button class="nav-toggle" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-
+            
             <ul class="nav-menu">
                 <li><a href="../index.html" class="nav-link"><i class="fas fa-terminal"></i> Home</a></li>
                 <li><a href="../blog.html" class="nav-link active"><i class="fas fa-newspaper"></i> Blog</a></li>
@@ -518,9 +405,12 @@
                 <span>/</span>
                 <span>Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione</span>
             </nav>
-
+            
             <div id="article-header">
-                <span class="article-category-tag">Uncategorized</span>
+                <div class="article-categories">
+                    <span class="article-category-tag">Uncategorized</span>
+                    
+                </div>
                 <h1>Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione</h1>
                 <div class="article-meta-info">
                     <span><i class="fas fa-calendar"></i> 08 February 2026</span>
@@ -536,16 +426,16 @@
         <a href="../blog.html" class="back-link">
             <i class="fas fa-arrow-left"></i> Torna al Blog
         </a>
-
+        
         <div id="article-content" class="article-content">
             <!-- Contenuto caricato da JavaScript -->
         </div>
-
+        
         <!-- Tags -->
         <div id="article-tags" class="article-tags">
-            <a href="../blog.html?search=%5B" class="article-tag">#[</a>
+            <a href="../blog.html?search=[" class="article-tag">#[</a>
         </div>
-
+        
         <!-- Share -->
         <div class="article-share">
             <span>Condividi:</span>
@@ -559,29 +449,6 @@
                 <i class="fas fa-link"></i>
             </button>
         </div>
-
-        
-        <!-- Articoli Correlati -->
-        <div class="related-articles">
-            <h3 class="related-articles-title">
-                <i class="fas fa-link"></i> Articoli Correlati
-            </h3>
-            <div class="related-articles-grid">
-                
-            <a href="cos-e-il-phishing-tipologie-e-difesa.html" class="related-card">
-                <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2024/05/phishing.webp?w=1024" alt="L&#x27;arte dell&#x27;inganno: guida completa al phishing e alle sue varianti moderne" class="related-card-image">
-                <div class="related-card-content">
-                    <span class="related-card-category">Uncategorized</span>
-                    <h4 class="related-card-title">L&#x27;arte dell&#x27;inganno: guida completa al phishing e alle sue varianti moderne</h4>
-                    <p class="related-card-excerpt">Guida completa al Phishing: scopri varianti, esempi pratici e tecniche di difesa. Impara a riconoscere le minacce digita...</p>
-                    <div class="related-card-meta">
-                        <span><i class="fas fa-calendar"></i> 08 February 2026</span>
-                        <span><i class="fas fa-clock"></i> 7 min</span>
-                    </div>
-                </div>
-            </a>
-            </div>
-        </div>
     </article>
 
     <!-- Footer -->
@@ -592,7 +459,7 @@
                     <span class="footer-logo">[CybersecurityZen]</span>
                     <p>Security Research • Tools • Knowledge</p>
                 </div>
-
+                
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Navigazione</h4>
@@ -606,7 +473,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="footer-bottom">
                 <p>&copy; <span id="current-year"></span> CybersecurityZen. All rights reserved.</p>
             </div>
@@ -630,8 +497,8 @@
     <script src="../js/main.js"></script>
     <script>
         // Contenuto Markdown dell'articolo
-        const articleContent = "## Analisi Tecnica del Phishing: Sotto il cofano dell’attacco\n\n![Immagine di apertura](/assets/images/phishing-analysis.png)\n\nDopo aver compreso la psicologia dietro l'inganno, è necessario analizzare l'infrastruttura tecnologica che permette al phishing di circolare e le contromisure necessarie per neutralizzarlo. La sicurezza informatica non è un prodotto statico, ma un processo stratificato che unisce consapevolezza e strumenti tecnici.\n\nIl successo di un'email di phishing dipende spesso dalla sua capacità di superare i filtri di sicurezza (Antispam e Gateway). Per farlo, gli attaccanti manipolano i protocolli di comunicazione standard che regolano il funzionamento della posta elettronica.\n\n## Lo Spoofing dell'Header (Identità falsificata)\n\nIl protocollo **SMTP** (Simple Mail Transfer Protocol), pilastro della posta elettronica nato negli anni '80, è intrinsecamente insicuro poiché non richiede una verifica nativa dell'identità del mittente. Un attaccante può manipolare due diversi tipi di indirizzi:\n\n* **Envelope From (MAIL FROM):** L'indirizzo tecnico usato dai server per l'instradamento del messaggio.\n* **Header From (Friendly From):** L'indirizzo visualizzato nel tuo client (es. `sicurezza@paypal.it`).\n\nAnalizzando il codice sorgente (header) di un'email di phishing, si nota spesso che questi due campi non coincidono: l'attaccante usa un server autorizzato per l'invio, ma \"trucca\" l'intestazione visibile per ingannare la vittima.\n\n## La Triade della Difesa: SPF, DKIM e DMARC\n\nPer risolvere le vulnerabilità dell'SMTP, sono stati introdotti tre protocolli che lavorano in sinergia tramite i record DNS del dominio:\n\n| Protocollo | Funzione Principale | Metodo di Verifica |\n|:-----------|:--------------------|:-------------------|\n| **SPF (Sender Policy Framework)** | Autorizzazione IP   | Specifica quali indirizzi IP sono autorizzati a inviare email per conto di un dominio. |\n| **DKIM (DomainKeys Identified Mail)** | Integrità contenuto | Aggiunge una firma crittografica all'intestazione per garantire che il contenuto non sia stato alterato durante il transito. |\n| **DMARC (Domain-based Message Authentication, Reporting, and Conformance)** | Policy Decision     | Indica al server ricevente come gestire l'email (es. rifiutarla o metterla in quarantena) se i controlli SPF o DKIM falliscono. |\n\n```bash\n# Verifica del record SPF per identificare i server autorizzati\n# Questo comando mostra la lista di IP e domini che possono inviare mail\ndig txt google.com +short\n\n# Verifica della policy DMARC\n# Permette di capire se il dominio ha impostato \"reject\", \"quarantine\" o \"none\"\ndig txt _dmarc.microsoft.com +short\n```\n\n> **⚠️ Attenzione:** Molti attacchi moderni provengono da domini compromessi che hanno SPF e DKIM configurati correttamente. L'autenticazione da sola non è più una garanzia assoluta di sicurezza.\n\n## Tecniche di offuscamento ed evasione\n\nGli attaccanti utilizzano strategie avanzate per nascondere la destinazione reale dei link e bypassare i sistemi di analisi automatizzata (Sandbox).\n\n### 1. Attacchi Omografi (Punycode o Homograph Attack)\n\nSfruttano la somiglianza visiva tra caratteri di alfabeti diversi. Ad esempio, la \"o\" latina in `google.com` può essere sostituita con una \"о\" cirillica. Il browser interpreterà il dominio come `xn--ggle-46da.com`, ma l'utente vedrà un URL apparentemente legittimo.\n\nPuoi utilizzare questo script Python per rilevare potenziali attacchi omografi e verificare la sicurezza del protocollo:\n\n```Python\nimport urllib.parse\nimport idna\n\ndef analyze_phishing_url(url):\n    \"\"\"\n    Analizza un URL per rilevare potenziali attacchi omografi (Punycode)\n    o configurazioni di protocollo insicure.\n    \"\"\"\n    try:\n        parsed = urllib.parse.urlparse(url)\n        domain = parsed.netloc\n        \n        print(f\"\\n--- Report Analisi URL ---\")\n        print(f\"URL analizzato: {url}\")\n        print(f\"Protocollo:     {parsed.scheme.upper()}\")\n        print(f\"Dominio:        {domain}\")\n        \n        # Rilevamento Punycode (Homograph Attack)\n        if \"xn--\" in domain:\n            decoded_domain = idna.decode(domain)\n            print(f\"⚠️  ALLERTA PUNYCODE: Il dominio reale visualizzato è: {decoded_domain}\")\n        else:\n            print(\"✅ Il dominio non sembra utilizzare offuscamento Punycode.\")\n            \n        # Verifica crittografia (HTTPS)\n        if parsed.scheme != \"https\":\n            print(\"⚠️  AVVISO: L'URL non utilizza HTTPS. La connessione è insicura.\")\n            \n    except Exception as e:\n        print(f\"Errore durante l'analisi: {e}\")\n\n# Esempio di test con un dominio punycode\nanalyze_phishing_url(\"https://xn--pypal-4ve.com/login\")\n```\n\n### 2. Redirect a catena\n\nL'email punta a un URL legittimo (spesso un sito WordPress bucato) che contiene uno script di reindirizzamento verso la landing page finale. Questo \"spezza\" l'analisi automatizzata dei filtri.\n\n### 3. Cloaking e Anti-Sandbox\n\nI moderni kit di phishing includono script capaci di rilevare se il visitatore è un utente reale o un sistema di sicurezza:\n\n* **IP Blacklisting:** Se l'IP appartiene a società di cybersecurity (es. Cisco, FireEye, Google), il sito mostra una pagina innocua.\n* **Geofencing:** Il contenuto malevolo viene attivato solo se l'utente si connette da una specifica nazione.\n\n## Esempio di Analisi Header\n\nPuoi identificare un tentativo di spoofing analizzando i salti (hop) effettuati dall'email nel campo `Received`:\n\n```bash\n# Esempio di controllo record SPF via terminale\ndig txt esempio-dominio-phishing.it\n```\n\n```Python\ndef check_header_discrepancy(envelope_from, header_from):\n    \"\"\"Semplice logica di controllo tra mittente reale e dichiarato\"\"\"\n    if envelope_from != header_from:\n        print(\"Alert: Possibile spoofing dell'header rilevato!\")\n        return True\n    return False\n```\n\n## Strategie di difesa e contromisure\n\nLa difesa efficace combina strumenti tecnologici e abitudini di verifica rigorose.\n\n### 1. Difesa lato utente\n\nPrima di cliccare, è fondamentale eseguire tre controlli rapidi:\n\n1. **Diffida dell'urgenza:** Messaggi che forzano un'azione immediata sono quasi sempre truffe.\n2. **Verifica il mittente:** Controlla l'indirizzo email reale, non solo il nome visualizzato.\n3. **Ispeziona i link:** Passa il mouse sopra un link (senza cliccare) per visualizzare l'URL di destinazione reale.\n\n### 2. L'autenticazione a più fattori (MFA)\n\nL'MFA è la misura più efficace: anche con la tua password, un attaccante non potrebbe accedere senza il secondo fattore. È preferibile usare app come **Bitwarden** o **Google Authenticator** rispetto agli SMS.\n\n### 3. Cosa fare se hai abboccato\n\nSe hai inserito i tuoi dati su un sito sospetto, la velocità di reazione è fondamentale:\n\n1. **Cambio password immediato:** Modifica la password dell'account compromesso e attiva un Password Manager.\n2. **Revoca delle sessioni:** Disconnetti tutti i dispositivi dalle impostazioni di sicurezza dell'account.\n3. **Blocco finanziario:** Se hai fornito dati bancari, contatta immediatamente l'istituto per bloccare le carte.\n4. **Verifica dei permessi:** Controlla che non siano stati aggiunti indirizzi email di recupero o deleghe non autorizzate.\n\n## Conclusioni\n\nIl phishing è una minaccia in continua evoluzione. Comprendere i protocolli tecnici (SPF/DKIM/DMARC) e mantenere un sano scetticismo sono le armi migliori per proteggere la propria identità digitale e i propri dati aziendali.\n\n---\n\n*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class=\"fab fa-discord\"><\/i><https://discord.gg/PE2q2jnNN6!>*\n";
-
+        const articleContent = "## Analisi Tecnica del Phishing: Sotto il cofano dell’attacco\n\n![Immagine di apertura](/assets/images/phishing-analysis.png)\n\nDopo aver compreso la psicologia dietro l'inganno, è necessario analizzare l'infrastruttura tecnologica che permette al phishing di circolare e le contromisure necessarie per neutralizzarlo. La sicurezza informatica non è un prodotto statico, ma un processo stratificato che unisce consapevolezza e strumenti tecnici.\n\nIl successo di un'email di phishing dipende spesso dalla sua capacità di superare i filtri di sicurezza (Antispam e Gateway). Per farlo, gli attaccanti manipolano i protocolli di comunicazione standard che regolano il funzionamento della posta elettronica.\n\n## Lo Spoofing dell'Header (Identità falsificata)\n\nIl protocollo **SMTP** (Simple Mail Transfer Protocol), pilastro della posta elettronica nato negli anni '80, è intrinsecamente insicuro poiché non richiede una verifica nativa dell'identità del mittente. Un attaccante può manipolare due diversi tipi di indirizzi:\n\n* **Envelope From (MAIL FROM):** L'indirizzo tecnico usato dai server per l'instradamento del messaggio.\n* **Header From (Friendly From):** L'indirizzo visualizzato nel tuo client (es. `sicurezza@paypal.it`).\n\nAnalizzando il codice sorgente (header) di un'email di phishing, si nota spesso che questi due campi non coincidono: l'attaccante usa un server autorizzato per l'invio, ma \"trucca\" l'intestazione visibile per ingannare la vittima.\n\n## La Triade della Difesa: SPF, DKIM e DMARC\n\nPer risolvere le vulnerabilità dell'SMTP, sono stati introdotti tre protocolli che lavorano in sinergia tramite i record DNS del dominio:\n\n| Protocollo | Funzione Principale | Metodo di Verifica |\n|:-----------|:--------------------|:-------------------|\n| **SPF (Sender Policy Framework)** | Autorizzazione IP   | Specifica quali indirizzi IP sono autorizzati a inviare email per conto di un dominio. |\n| **DKIM (DomainKeys Identified Mail)** | Integrità contenuto | Aggiunge una firma crittografica all'intestazione per garantire che il contenuto non sia stato alterato durante il transito. |\n| **DMARC (Domain-based Message Authentication, Reporting, and Conformance)** | Policy Decision     | Indica al server ricevente come gestire l'email (es. rifiutarla o metterla in quarantena) se i controlli SPF o DKIM falliscono. |\n\n```bash\n# Verifica del record SPF per identificare i server autorizzati\n# Questo comando mostra la lista di IP e domini che possono inviare mail\ndig txt google.com +short\n\n# Verifica della policy DMARC\n# Permette di capire se il dominio ha impostato \"reject\", \"quarantine\" o \"none\"\ndig txt _dmarc.microsoft.com +short\n```\n\n> **⚠️ Attenzione:** Molti attacchi moderni provengono da domini compromessi che hanno SPF e DKIM configurati correttamente. L'autenticazione da sola non è più una garanzia assoluta di sicurezza.\n\n## Tecniche di offuscamento ed evasione\n\nGli attaccanti utilizzano strategie avanzate per nascondere la destinazione reale dei link e bypassare i sistemi di analisi automatizzata (Sandbox).\n\n### 1. Attacchi Omografi (Punycode o Homograph Attack)\n\nSfruttano la somiglianza visiva tra caratteri di alfabeti diversi. Ad esempio, la \"o\" latina in `google.com` può essere sostituita con una \"о\" cirillica. Il browser interpreterà il dominio come `xn--ggle-46da.com`, ma l'utente vedrà un URL apparentemente legittimo.\n\nPuoi utilizzare questo script Python per rilevare potenziali attacchi omografi e verificare la sicurezza del protocollo:\n\n```Python\nimport urllib.parse\nimport idna\n\ndef analyze_phishing_url(url):\n    \"\"\"\n    Analizza un URL per rilevare potenziali attacchi omografi (Punycode)\n    o configurazioni di protocollo insicure.\n    \"\"\"\n    try:\n        parsed = urllib.parse.urlparse(url)\n        domain = parsed.netloc\n        \n        print(f\"\\n--- Report Analisi URL ---\")\n        print(f\"URL analizzato: {url}\")\n        print(f\"Protocollo:     {parsed.scheme.upper()}\")\n        print(f\"Dominio:        {domain}\")\n        \n        # Rilevamento Punycode (Homograph Attack)\n        if \"xn--\" in domain:\n            decoded_domain = idna.decode(domain)\n            print(f\"⚠️  ALLERTA PUNYCODE: Il dominio reale visualizzato è: {decoded_domain}\")\n        else:\n            print(\"✅ Il dominio non sembra utilizzare offuscamento Punycode.\")\n            \n        # Verifica crittografia (HTTPS)\n        if parsed.scheme != \"https\":\n            print(\"⚠️  AVVISO: L'URL non utilizza HTTPS. La connessione è insicura.\")\n            \n    except Exception as e:\n        print(f\"Errore durante l'analisi: {e}\")\n\n# Esempio di test con un dominio punycode\nanalyze_phishing_url(\"https://xn--pypal-4ve.com/login\")\n```\n\n### 2. Redirect a catena\n\nL'email punta a un URL legittimo (spesso un sito WordPress bucato) che contiene uno script di reindirizzamento verso la landing page finale. Questo \"spezza\" l'analisi automatizzata dei filtri.\n\n### 3. Cloaking e Anti-Sandbox\n\nI moderni kit di phishing includono script capaci di rilevare se il visitatore è un utente reale o un sistema di sicurezza:\n\n* **IP Blacklisting:** Se l'IP appartiene a società di cybersecurity (es. Cisco, FireEye, Google), il sito mostra una pagina innocua.\n* **Geofencing:** Il contenuto malevolo viene attivato solo se l'utente si connette da una specifica nazione.\n\n## Esempio di Analisi Header\n\nPuoi identificare un tentativo di spoofing analizzando i salti (hop) effettuati dall'email nel campo `Received`:\n\n```bash\n# Esempio di controllo record SPF via terminale\ndig txt esempio-dominio-phishing.it\n```\n\n```Python\ndef check_header_discrepancy(envelope_from, header_from):\n    \"\"\"Semplice logica di controllo tra mittente reale e dichiarato\"\"\"\n    if envelope_from != header_from:\n        print(\"Alert: Possibile spoofing dell'header rilevato!\")\n        return True\n    return False\n```\n\n## Strategie di difesa e contromisure\n\nLa difesa efficace combina strumenti tecnologici e abitudini di verifica rigorose.\n\n### 1. Difesa lato utente\n\nPrima di cliccare, è fondamentale eseguire tre controlli rapidi:\n\n1. **Diffida dell'urgenza:** Messaggi che forzano un'azione immediata sono quasi sempre truffe.\n2. **Verifica il mittente:** Controlla l'indirizzo email reale, non solo il nome visualizzato.\n3. **Ispeziona i link:** Passa il mouse sopra un link (senza cliccare) per visualizzare l'URL di destinazione reale.\n\n### 2. L'autenticazione a più fattori (MFA)\n\nL'MFA è la misura più efficace: anche con la tua password, un attaccante non potrebbe accedere senza il secondo fattore. È preferibile usare app come **Bitwarden** o **Google Authenticator** rispetto agli SMS.\n\n### 3. Cosa fare se hai abboccato\n\nSe hai inserito i tuoi dati su un sito sospetto, la velocità di reazione è fondamentale:\n\n1. **Cambio password immediato:** Modifica la password dell'account compromesso e attiva un Password Manager.\n2. **Revoca delle sessioni:** Disconnetti tutti i dispositivi dalle impostazioni di sicurezza dell'account.\n3. **Blocco finanziario:** Se hai fornito dati bancari, contatta immediatamente l'istituto per bloccare le carte.\n4. **Verifica dei permessi:** Controlla che non siano stati aggiunti indirizzi email di recupero o deleghe non autorizzate.\n\n## Conclusioni\n\nIl phishing è una minaccia in continua evoluzione. Comprendere i protocolli tecnici (SPF/DKIM/DMARC) e mantenere un sano scetticismo sono le armi migliori per proteggere la propria identità digitale e i propri dati aziendali.\n\n---\n\n*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class=\"fab fa-discord\"></i><https://discord.gg/PE2q2jnNN6!>*\n";
+        
         // Configura marked
         marked.setOptions({
             highlight: function(code, lang) {
@@ -643,27 +510,27 @@
             breaks: true,
             gfm: true
         });
-
+        
         // Renderizza il contenuto
         document.getElementById('article-content').innerHTML = marked.parse(articleContent);
-
+        
         // Applica syntax highlighting
         document.querySelectorAll('pre code').forEach(block => {
             hljs.highlightElement(block);
         });
-
+        
         // Funzioni di condivisione
         function shareOnTwitter() {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(document.title);
             window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
         }
-
+        
         function shareOnLinkedIn() {
             const url = encodeURIComponent(window.location.href);
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
         }
-
+        
         function copyLink() {
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {
