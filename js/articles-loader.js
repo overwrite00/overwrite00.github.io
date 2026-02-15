@@ -154,7 +154,41 @@ function convertMarkdownToHTML(markdown) {
 // ============================================
 
 /**
- * Renderizza gli ultimi articoli nella homepage
+ * Renderizza gli articoli in evidenza nella homepage
+ */
+async function renderHomeFeatured(containerId = 'featured-container', maxItems = 5) {
+    const container = document.getElementById(containerId);
+    const section = document.getElementById('featured');
+    
+    if (!container || !section) return;
+    
+    const data = await loadArticlesData();
+    
+    // Filtra solo gli articoli featured
+    const featuredArticles = data.articles
+        .filter(a => a.featured === true)
+        .slice(0, maxItems);
+    
+    if (featuredArticles.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+    
+    // Mostra la sezione
+    section.style.display = 'block';
+    
+    // Genera la lista
+    container.innerHTML = featuredArticles.map(article => `
+        <a href="articles/${article.id}.html" class="featured-item">
+            <i class="fas fa-bookmark"></i>
+            <span class="featured-item-title">${article.title}</span>
+            <span class="featured-item-date">${formatDate(article.date)}</span>
+        </a>
+    `).join('');
+}
+
+/**
+ * Renderizza gli ultimi articoli nella homepage (ordinati per data, esclusi featured già mostrati)
  */
 async function renderHomeArticles(containerId = 'articles-container', limit = 3) {
     const container = document.getElementById(containerId);
@@ -179,7 +213,11 @@ async function renderHomeArticles(containerId = 'articles-container', limit = 3)
     if (emptyState) emptyState.style.display = 'none';
     if (footer) footer.style.display = 'block';
     
-    const articles = data.articles.slice(0, limit);
+    // Ordina per data (più recenti prima) e prendi i primi 'limit'
+    const articles = [...data.articles]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, limit);
+    
     container.innerHTML = articles.map(article => generateArticleCard(article)).join('');
     
     // Animazione fade-in
@@ -244,6 +282,40 @@ async function renderHomeCategories(containerId = 'categories-container') {
 // ============================================
 
 /**
+ * Renderizza gli articoli in evidenza nella pagina blog
+ */
+async function renderBlogFeatured(containerId = 'blog-featured-container', maxItems = 5) {
+    const container = document.getElementById(containerId);
+    const section = document.getElementById('blog-featured');
+    
+    if (!container || !section) return;
+    
+    const data = await loadArticlesData();
+    
+    // Filtra solo gli articoli featured
+    const featuredArticles = data.articles
+        .filter(a => a.featured === true)
+        .slice(0, maxItems);
+    
+    if (featuredArticles.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+    
+    // Mostra la sezione
+    section.style.display = 'block';
+    
+    // Genera la lista
+    container.innerHTML = featuredArticles.map(article => `
+        <a href="articles/${article.id}.html" class="featured-item">
+            <i class="fas fa-bookmark"></i>
+            <span class="featured-item-title">${article.title}</span>
+            <span class="featured-item-date">${formatDate(article.date)}</span>
+        </a>
+    `).join('');
+}
+
+/**
  * Renderizza tutti gli articoli nella pagina blog
  */
 async function renderBlogArticles(containerId = 'blog-articles-container') {
@@ -265,12 +337,18 @@ async function renderBlogArticles(containerId = 'blog-articles-container') {
         return;
     }
     
+    // Ordina per data (più recenti prima)
+    const sortedArticles = [...data.articles].sort((a, b) => b.date.localeCompare(a.date));
+    
     // Salva globalmente per filtri
-    window.allArticles = data.articles;
+    window.allArticles = sortedArticles;
     window.allCategories = data.categories;
     
-    renderFilteredArticles(data.articles, container);
+    renderFilteredArticles(sortedArticles, container);
     renderCategoryFilters(data.categories);
+    
+    // Renderizza anche la sezione featured
+    renderBlogFeatured();
 }
 
 /**
@@ -589,6 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (path.endsWith('index.html') || path.endsWith('/') || path === '') {
         // Homepage
+        renderHomeFeatured('featured-container', 5);
         renderHomeArticles('articles-container', 3);
         renderHomeCategories('categories-container');
     } else if (path.endsWith('blog.html')) {
