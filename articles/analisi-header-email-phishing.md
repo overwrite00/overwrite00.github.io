@@ -1,7 +1,7 @@
 ---
 title: "Analisi degli Header Email: Guida Completa per Identificare il Phishing"
 description: "Impara a leggere e analizzare gli header delle email per riconoscere tentativi di phishing, spoofing e altre minacce. Una guida tecnica dettagliata con esempi pratici."
-date: 2025-02-15
+date: 2026-02-15
 author: "CybersecurityZen"
 image: "assets/images/phishing-analysis.png"
 category: [
@@ -18,6 +18,7 @@ tags: [
         "threat analysis"
         ]
 draft: false
+featured: true
 ---
 
 # Analisi degli Header Email: Guida Completa per Identificare il Phishing
