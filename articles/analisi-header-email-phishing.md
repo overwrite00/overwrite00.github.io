@@ -18,7 +18,6 @@ tags: [
         "threat analysis"
         ]
 draft: false
-featured: true
 ---
 
 # Analisi degli Header Email: Guida Completa per Identificare il Phishing
