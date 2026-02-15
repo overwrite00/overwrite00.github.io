@@ -1,7 +1,7 @@
 ---
 title: "Analisi tecnica del phishing: Spoofing, protocolli e tecniche di evasione"
 description: "Approfondimento tecnico sul phishing: analizziamo header email, spoofing, protocolli SPF/DKIM/DMARC e tecniche di evasione."
-categories: [
+category: [
     "Security Awareness",
     "Threat Analysis"
     ]

@@ -4,7 +4,7 @@ description: "Impara a leggere e analizzare gli header delle email per riconosce
 date: 2025-02-15
 author: "CybersecurityZen"
 image: "assets/images/phishing-analysis.png"
-categories: [
+category: [
         "Security Awareness",
         "Threat Analysis"
         ]

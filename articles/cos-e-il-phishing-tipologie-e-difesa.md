@@ -1,7 +1,7 @@
 ---
 title: "L'arte dell'inganno: guida completa al phishing e alle sue varianti moderne"
 description: "Guida completa al Phishing: scopri varianti, esempi pratici e tecniche di difesa. Impara a riconoscere le minacce digitali e proteggi i tuoi dati sensibili."
-categories: ["Security Awareness"]
+category: ["Security Awareness"]
 date: "2026-02-08"
 author: "CybersecurityZen"
 image: "https://www.malwarebytes.com/wp-content/uploads/sites/2/2024/05/phishing.webp?w=1024"

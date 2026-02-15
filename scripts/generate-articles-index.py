@@ -47,6 +47,19 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     """
     Estrae il frontmatter YAML dal contenuto Markdown.
     Ritorna (metadata_dict, body_content)
+    
+    Supporta:
+    - Valori semplici: key: value
+    - Array inline: key: ["item1", "item2"]
+    - Array multilinea con trattino:
+        key:
+          - item1
+          - item2
+    - Array multilinea con parentesi quadre:
+        key: [
+            "item1",
+            "item2"
+        ]
     """
     frontmatter_pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)$'
     match = re.match(frontmatter_pattern, content, re.DOTALL)
@@ -56,6 +69,47 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     
     yaml_content = match.group(1)
     body = match.group(2)
+    
+    # Prima passata: rimuovi array multilinea con parentesi e convertili in inline
+    # Trova pattern come: key: [\n  "item1",\n  "item2"\n]
+    def flatten_multiline_array(yaml_text):
+        result = []
+        lines = yaml_text.split('\n')
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            
+            # Controlla se inizia un array multilinea: "key: ["
+            if ':' in line and line.rstrip().endswith('['):
+                key_part = line.rstrip()[:-1]  # Rimuovi la [
+                items = []
+                i += 1
+                
+                # Raccogli tutti gli elementi fino alla ]
+                while i < len(lines):
+                    inner_line = lines[i].strip()
+                    
+                    # Fine array
+                    if inner_line == ']' or inner_line == '],':
+                        break
+                    
+                    # Estrai l'elemento (rimuovi virgola finale se presente)
+                    item = inner_line.rstrip(',').strip().strip('"').strip("'")
+                    if item:
+                        items.append(item)
+                    i += 1
+                
+                # Ricostruisci come array inline
+                items_str = ', '.join([f'"{item}"' for item in items])
+                result.append(f'{key_part}[{items_str}]')
+            else:
+                result.append(line)
+            
+            i += 1
+        
+        return '\n'.join(result)
+    
+    yaml_content = flatten_multiline_array(yaml_content)
     
     # Parse YAML
     metadata = {}
@@ -67,7 +121,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         if not line or line.startswith('#'):
             continue
             
-        # Gestione liste YAML multilinea
+        # Gestione liste YAML multilinea con trattino
         if line.startswith('  - ') and current_key:
             if current_list is None:
                 current_list = []
@@ -157,8 +211,8 @@ def process_article(filepath: Path) -> dict | None:
     if isinstance(image, list):
         image = image[0] if image else ''
     
-    # Gestisci category come lista
-    categories = ensure_list(metadata.get('category', 'Uncategorized'))
+    # Gestisci category come lista (supporta sia "category" che "categories")
+    categories = ensure_list(metadata.get('category') or metadata.get('categories', 'Uncategorized'))
     if not categories:
         categories = ['Uncategorized']
     
