@@ -1006,8 +1006,10 @@ def main():
         elif article and article['draft']:
             print(f"    ⏸️  Draft, ignorato")
     
-    # Ordina: featured prima, poi per data
-    articles.sort(key=lambda x: (not x.get('featured', False), x['date']), reverse=True)
+    # Ordina: featured prima, poi per data (più recenti prima)
+    # Python sort è stabile, quindi usiamo due passaggi
+    articles.sort(key=lambda x: x['date'], reverse=True)  # Prima per data decrescente
+    articles.sort(key=lambda x: not x.get('featured', False))  # Poi featured in cima (False < True)
     
     # Costruisci output JSON
     output = {
