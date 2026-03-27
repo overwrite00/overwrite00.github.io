@@ -506,4 +506,4 @@ Questa guida fa parte di una serie completa sul phishing. Per approfondire l'arg
 
 ---
 
-*Ultimo aggiornamento: Febbraio 2025*
+*Se vuoi approfondire questi temi, hai domande su questo o altri argomenti, entra nella nostra community Discord: <i class="fab fa-discord"></i><https://discord.gg/PE2q2jnNN6!>*
