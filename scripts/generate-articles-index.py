@@ -436,7 +436,7 @@ def generate_article_html(article: dict) -> str:
             font-family: var(--font-display);
             font-size: 1.75rem;
             font-weight: 600;
-            margin-top: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
             border-bottom: 1px solid var(--border-color);
