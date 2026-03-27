@@ -462,7 +462,7 @@ def generate_article_html(article: dict) -> str:
         }}
         
         .article-content p {{
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
         }}
         
         .article-content a {{
