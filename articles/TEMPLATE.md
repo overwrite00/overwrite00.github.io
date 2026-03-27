@@ -1,14 +1,13 @@
 ---
 title: "Titolo dell'Articolo"
 description: "Una breve descrizione dell'articolo (max 160 caratteri)"
-category: "Tutorial"
-date: "2026-02-06"
+category: ["Categoria Principale", "Categoria Secondaria"]
+date: "2026-02-15"
 author: "CybersecurityZen"
-image: ""
-tags:
-  - cybersecurity
-  - tutorial
-draft: false
+image: "/assets/images/nome-immagine.png"
+tags: ["tag1", "tag2", "tag3"]
+draft: true
+featured: false
 ---
 
 # Titolo dell'Articolo
@@ -57,7 +56,7 @@ sudo apt install nmap
 
 ## Immagini
 
-![Alt text dell'immagine](assets/images/nome-immagine.jpg)
+![Alt text dell'immagine](/assets/images/nome-immagine.png)
 
 ## Tabelle
 
