@@ -437,18 +437,18 @@ def generate_article_html(article: dict) -> str:
             font-size: 1.75rem;
             font-weight: 600;
             margin-top: var(--spacing-xl);
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: var(--spacing-sm);
+            padding-bottom: var(--spacing-xs);
         }}
         
         .article-content h3 {{
             font-family: var(--font-display);
             font-size: 1.35rem;
             font-weight: 600;
-            margin-top: var(--spacing-lg);
-            margin-bottom: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-xs);
             color: var(--text-primary);
         }}
         
@@ -456,8 +456,8 @@ def generate_article_html(article: dict) -> str:
             font-family: var(--font-display);
             font-size: 1.15rem;
             font-weight: 600;
-            margin-top: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
             color: var(--text-secondary);
         }}
         
@@ -478,12 +478,12 @@ def generate_article_html(article: dict) -> str:
         
         .article-content ul,
         .article-content ol {{
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
             padding-left: var(--spacing-lg);
         }}
         
         .article-content li {{
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
         }}
         
         .article-content strong {{
